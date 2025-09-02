@@ -60,6 +60,8 @@ h3 {
 	gap: 50px;
 	flex: 2;
 	justify-content: center;
+	flex-wrap: nowrap;
+	white-space: nowrap;
 }
 
 .navbar-spacer {
@@ -74,6 +76,7 @@ h3 {
 	padding: 20px 0px;
 	border-radius: 5px;
 	transition: all 0.3s ease;
+	white-space: nowrap;
 }
 
 .navbar-link:hover {
@@ -148,6 +151,19 @@ h3 {
 	left: 50%;
 	transform: translateX(-50%);
 	max-width: 600px;
+	opacity: 0;
+	animation: carEntrance 1s ease-in-out 1s forwards;
+}
+
+@keyframes carEntrance {
+	from {
+		opacity: 0;
+		transform: translateX(-150%) translateY(0);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(-50%) translateY(0);
+	}
 }
 h2 {
 	font-size: 35px;
