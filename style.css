@@ -4,7 +4,12 @@ body, html {
 	padding: 0;
 	font-family: 'Arial', sans-serif;
 }
-
+p {
+	font-family:'Open Sans';
+}
+h3 {
+	font-size: 25px;
+}
 /* Navbar Styles */
 .navbar {
 	position: fixed;
@@ -29,16 +34,16 @@ body, html {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	max-width: 1200px;
-	margin: 0 auto;
+	width: 100%;
 	padding: 25px 20px;
 }
 
 .navbar-brand {
-	font-size: 24px;
+	font-size: 28px;
 	font-weight: bold;
 	color: #fff;
 	text-decoration: none;
+	flex: 1;
 }
 
 .navbar-menu {
@@ -46,15 +51,21 @@ body, html {
 	list-style: none;
 	margin: 0;
 	padding: 0;
-	gap: 50px;
+	gap: 90px;
+	flex: 2;
+	justify-content: center;
+}
+
+.navbar-spacer {
+	flex: 1;
 }
 
 .navbar-link {
 	color: #fff;
 	text-decoration: none;
-	font-size: 16px;
+	font-size: 24px;
 	font-weight: 500;
-	padding: 10px 20px;
+	padding: 20px 0px;
 	border-radius: 5px;
 	transition: all 0.3s ease;
 }
@@ -76,6 +87,51 @@ body, html {
 	image-rendering: -webkit-optimize-contrast;
 	image-rendering: crisp-edges;
 	margin-top: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.reserve-btn {
+	position: absolute;
+	top: 55%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: linear-gradient(135deg, #FFB6A3,#2E1425 );
+	color: #fff;
+	border: none;
+	padding: 20px 40px;
+	font-size: 25px;
+	font-weight: bold;
+	border-radius: 50px;
+	cursor: pointer;
+	box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+	transition: all 0.3s ease;
+	z-index: 10;
+}
+
+.titreprincipal {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	z-index: 10;
+}
+
+.titreprincipal p {
+	color: white;
+	font-size: 32px;
+	font-weight: bold;
+	margin: 0;
+	text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+	letter-spacing: 2px;
+}
+
+.reserve-btn:hover {
+	background: linear-gradient(135deg, #2E1425, #2E1425);
+	transform: translate(-50%, -50%) scale(1.05);
+	box-shadow: 0 12px 35px rgba(0, 123, 255, 0.4);
 }
 
 .car-overlay {
@@ -83,5 +139,149 @@ body, html {
 	bottom: -20px;
 	left: 50%;
 	transform: translateX(-50%);
-	max-width: 500px;
+	max-width: 600px;
+}
+h2 {
+	font-size: 35px;
+	font-family: 'Roboto';
+	font-weight: 10;
+}
+
+/* Section Services avec 3 colonnes */
+.services-section {
+	background: #f0f0f0;
+	padding: 50px;
+	text-align: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.services-icons {
+	display: flex;
+	justify-content: center;
+	gap: 40px;
+	margin: 30px 0 20px 0;
+	align-items: center;
+	max-width: 1200px;
+	width: 100%;
+}
+
+.services-icons .icon-wrapper {
+	flex: 1;
+	display: flex;
+	justify-content: center;
+}
+
+.services-icons img {
+	width: 8cap;
+	height: 80px;
+	object-fit: contain;
+	transition: transform 0.3s ease;
+}
+
+.services-icons img:hover {
+	transform: scale(1.1);
+}
+
+.three-columns {
+	display: flex;
+	justify-content: center;
+	gap: 40px;
+	max-width: 1200px;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.column {
+	flex: 1;
+	background: white;
+	padding: 30px;
+	border-radius: 15px;
+	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+	transition: transform 0.3s ease;
+}
+
+.column:hover {
+	transform: translateY(-5px);
+}
+
+.column p {
+	font-size: 22px;
+	line-height: 1.6;
+	color: #333;
+	margin: 0;
+}
+
+/* Footer Styles */
+.footer {
+	background: rgba(0, 0, 0, 0.9);
+	backdrop-filter: blur(10px);
+	color: white;
+	padding: 20px 0;
+}
+
+.footer-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+.footer-logo h2 {
+	font-size: 24px;
+	font-weight: bold;
+	color: #fff;
+	margin: 0;
+}
+
+.footer-contact {
+	text-align: center;
+}
+
+.contact-info {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+}
+
+.contact-info span {
+	font-size: 18px;
+	color: #fff;
+	white-space: nowrap;
+}
+
+.footer-icons {
+	display: flex;
+	gap: 15px;
+	align-items: center;
+}
+
+.footer-icons img {
+	width: 30px;
+	height: 30px;
+	object-fit: cover;
+	border-radius: 5px;
+	transition: transform 0.3s ease;
+}
+
+.footer-icons img:hover {
+	transform: scale(1.1);
+}
+
+.footer-bottom {
+	background: rgba(0, 0, 0, 0.95);
+	text-align: center;
+	padding: 10px;
+	margin-top: 10px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
+	margin: 0;
+	font-size: 12px;
+	color: #ccc;
 }
