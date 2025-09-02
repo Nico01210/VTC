@@ -7,7 +7,7 @@
 
     <title>Contact</title>
 </head>
-<body>
+<body class="contact-page">
 
 
     <!--- NAVBAR -->
@@ -27,17 +27,43 @@
         </div>
     </nav>
     
-    CONTENU
-    <br>
-    7
-        <br>
-8
-    <br>
-3    <br>
-7
-    <br>
-CONTENU
-    <br>
+    <div class="contact-form-container">
+        <h1>Contactez-nous</h1>
+        <form id="contactForm" class="contact-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nom">Nom :</label>
+                    <input type="text" id="nom" name="nom" required>
+                </div>
+                <div class="form-group">
+                    <label for="prenom">Prénom :</label>
+                    <input type="text" id="prenom" name="prenom" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="telephone">Numéro de téléphone :</label>
+                <input type="tel" id="telephone" name="telephone" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Mail :</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="objet">Objet du message :</label>
+                <input type="text" id="objet" name="objet" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message :</label>
+                <textarea id="message" name="message" rows="9" required></textarea>
+            </div>
+            
+            <button type="submit" class="submit-btn">Envoyer le message</button>
+        </form>
+    </div>
 
 
  <!-- Footer -->
@@ -69,5 +95,18 @@ CONTENU
             <p>Copyright 2025 Nicolas VTC. Tous droits réservés.</p>
         </div>
     </footer>
+
+    <script>
+        // JavaScript pour gérer l'effet de scroll de la navbar
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
 </body>
 </html>
