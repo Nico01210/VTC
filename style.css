@@ -602,14 +602,16 @@ h2 {
 }
 
 .driver-photo {
-	width: 150px;
-	height: 150px;
+	width: 220px;
+	height: 220px;
 	border-radius: 50%;
 	margin: 0 auto 20px;
 	object-fit: cover;
+	object-position: 50% 20%;
 	border: 5px solid #FFB6A3;
 	transition: transform 0.3s ease;
 	display: block;
+
 }
 
 .driver-photo:hover {
