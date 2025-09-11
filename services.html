@@ -3,16 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-
     <title>Services</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+    }
+    h2 {
+        color: white;
+    }
+     .services {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+
+  .icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+  }
+
+  .card h3 {
+    margin: 10px 0;
+    color: #333;
+  }
+
+  .card p {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+
+  .btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .btn:hover {
+    background-color: #0056b3;
+  }
+    /* --- Processus --- */
+  .steps {
+    max-width: 1000px;
+    margin: 0 auto 40px auto;
+    padding: 0 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+
+  .step {
+    flex: 1 1 200px;
+    text-align: center;
+    margin: 20px;
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  .step h4 {
+    margin-top: 10px;
+    color: #007bff;
+    font-size: 20px;
+  }
+
+  .step p {
+    color: #555;
+    font-size: 16px;
+  }
+.map-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin: 40px 0 60px 0;
+      }
+
+#map {
+        height: 500px;
+        width: 1000px;
+        max-width: 95vw;
+        border-radius: 16px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+        background: #eee;
+      }
+
+
+</style>
+
+  </style>
 </head>
 <body>
 
+<body class="services-page">
 
     <!--- NAVBAR -->
 
-    <nav class="navbar">
+  <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-brand">VTC Premium</div>
             <ul class="navbar-menu">
@@ -26,18 +144,108 @@
             <div class="navbar-spacer"></div>
         </div>
     </nav>
+<h2>Nos Services</h2>
+
+<section class="services">
     
-    CONTENU
-    <br>
-    7
-        <br>
-8
-    <br>
-3    <br>
-7
-    <br>
-CONTENU
-    <br>
+  <!-- Carte 1 -->
+  <div class="card">
+    <div class="icon">✈️</div>
+    <h3>Transfert Aéroport / Gare</h3>
+    <p>Arrivez à l’heure à votre vol ou votre train avec notre service rapide et fiable.</p>
+    <a href="/reservation.html" class="btn">Réserver maintenant</a>
+  </div>
+
+  <!-- Carte 2 -->
+  <div class="card">
+    <div class="icon">🚘</div>
+    <h3>Courses personnalisées</h3>
+    <p>Choisissez votre musique, votre ambiance, et même des snacks à bord.</p>
+    <a href="/reservation.html" class="btn">Réserver maintenant</a>
+  </div>
+
+  <!-- Carte 3 -->
+  <div class="card">
+    <div class="icon">🛣️</div>
+    <h3>Courses Longue Distance</h3>
+    <p>Déplacez-vous entre villes ou régions avec un confort optimal et des prix compétitifs. Réservez facilement via Whatsapp.</p>
+    <a href="/reservation.html" class="btn">Réserver maintenant</a>
+  </div>
+</section>
+
+<h2>Comment ça marche ?</h2>
+<section class="steps">
+  <div class="step">
+    <h4>1. Réservez</h4>
+    <p>Réservez votre course via Whatsapp.</p>
+  </div>
+  <div class="step">
+    <h4>2. Confirmation</h4>
+    <p>Recevez la confirmation du chauffeur.</p>
+  </div>
+  <div class="step">
+    <h4>3. Attente</h4>
+    <p>Attendez votre chauffeur, il vous informera de son heure d'arrivée.</p>
+  </div>
+  <div class="step">
+    <h4>4. Paiement</h4>
+    <p>Paiement sécurisé et possibilité de laisser un avis.</p>
+  </div>
+</section>
+
+                             <!-- MAP -->   
+ <h2>Nos zones de services - Lisbonne et alentours</h2>
+  <div class="map-container">
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialiser la carte centrée sur Lisbonne
+    var map = L.map('map').setView([38.7169, -9.139], 11);
+
+    // Charger OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Ajouter des points de repère
+    function addMarker(lat, lng, text) {
+      L.marker([lat, lng]).addTo(map).bindPopup(text);
+    }
+
+    addMarker(38.7169, -9.139, "<b>Lisbonne Centre</b>");
+    addMarker(38.7700, -9.1286, "<b>Aéroport</b>");
+    addMarker(38.7071, -9.1366, "<b>Gare Santa Apolónia</b>");
+    addMarker(38.6927, -9.3037, "<b>Seixal</b>");
+    addMarker(38.6635, -9.0724, "<b>Barreiro</b>");
+    addMarker(38.6969, -9.4215, "<b>Cascais</b>");
+    addMarker(38.8029, -9.3817, "<b>Sintra</b>");
+
+    // Polygone élargi pour englober Barreiro et Seixal
+    var zoneCoords = [
+      [38.85, -9.50],  // Nord-Ouest de Sintra
+      [38.82, -9.38],  // Sintra
+      [38.75, -9.28],  // Lisbonne Nord
+      [38.70, -9.05],  // Lisbonne Est
+      [38.65, -9.02],  // Barreiro Est
+      [38.62, -9.07],  // Barreiro Sud
+      [38.60, -9.15],  // Seixal Est
+      [38.63, -9.30],  // Seixal Ouest
+      [38.70, -9.42],  // Vers Cascais
+      [38.80, -9.48]   // Nord de Cascais
+    ];
+
+    var polygon = L.polygon(zoneCoords, {
+      color: 'blue',
+      weight: 3,
+      fillColor: '#3f83f8',
+      fillOpacity: 0.25
+    }).addTo(map);
+
+    polygon.bindPopup("Zone de service : Lisbonne, Seixal, Barreiro, Cascais et Sintra");
+  </script>
+
 
 
  <!-- Footer -->
@@ -46,6 +254,7 @@ CONTENU
         <div class="footer-container">
             <div class="footer-logo">
                 <h2>VTC Premium</h2>
+
             </div>
             
             <div class="footer-contact">
@@ -69,5 +278,15 @@ CONTENU
             <p>Copyright 2025 Nicolas VTC. Tous droits réservés.</p>
         </div>
     </footer>
+<script>
+  window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
+  });
+</script>
 </body>
 </html>
