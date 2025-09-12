@@ -24,9 +24,9 @@
         </div>
     </nav>
 
-<section id="reservation" style="padding:50px 20px; text-align:center; font-family: Arial, sans-serif;">
-  <h2 style="font-size:32px; margin-bottom:20px; color:white; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">Réservation</h2>
->  <p style="max-width:600px; margin:0 auto 30px; color:white; font-size:16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);">
+<section id="reservation" style="padding:50px 20px; text-align:center;">
+  <h1>Réservation</h1>
+>  <p style="max-width:600px; margin:0 auto 30px; color:white; font-size:20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);">
     Cliquez sur un jour disponible pour réserver votre trajet via WhatsApp.
   </p>
 
@@ -113,7 +113,7 @@
         dayBox.addEventListener('mouseleave', () => dayBox.style.backgroundColor = '#25D366');
         dayBox.addEventListener('click', () => {
           // Affiche les horaires disponibles sous forme de prompt
-          let horaire = prompt('Choisissez un créneau horaire parmi :\n' + activeHoraires.join(', '), activeHoraires[0]);
+          let horaire = prompt('Horaires disponibles pour ce jour :\n(Veuillez choisir uniquement parmi ces créneaux)\n\n' + activeHoraires.join(', '), activeHoraires[0]);
           if(horaire && activeHoraires.includes(horaire)) {
             const selectedMonth = monthNames[currentMonth];
             const message = `Bonjour Stephan, seriez vous disponible pour une course le ${day} ${selectedMonth} ${currentYear} à ${horaire} ?`;

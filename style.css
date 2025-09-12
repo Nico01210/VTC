@@ -597,7 +597,7 @@ h2 {
 	padding: 50px 20px;
 }
 
-.about-container h1 {
+h1 {
 	text-align: center;
 	font-size: 36px;
 	color: white;
@@ -991,4 +991,8 @@ h2 {
   .step {
     margin: 10px 0;
   }
+}
+h2 {
+color: white;	
+
 }
