@@ -1,0 +1,26 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Backoffice</title>
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+  <h1>Connexion Backoffice</h1>
+  <script>
+    const netlifyIdentity = window.netlifyIdentity;
+    netlifyIdentity.init();
+
+    netlifyIdentity.on('login', user => {
+      netlifyIdentity.close();
+      window.location.href = '/backoffice.html'; // redirige vers la page backoffice
+    });
+
+    netlifyIdentity.on('logout', () => {
+      window.location.href = '/login.html';
+    });
+  </script>
+  <button onclick="netlifyIdentity.open()">Se connecter</button>
+</body>
+</html>
