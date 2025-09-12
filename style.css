@@ -175,6 +175,16 @@ body:not(.home-page) {
 	backdrop-filter: none;
 	box-shadow: none;
 }
+*/* Navbar transparente pour la page backoffice */
+.backoffice-page .navbar {
+  background: transparent;
+  transition: background-color 0.3s ease;
+}
+
+.backoffice-page .navbar.scrolled {
+  background: rgba(46, 20, 37, 0.95);
+  backdrop-filter: blur(10px);
+}
 .navbar.scrolled {
 	background: rgba(0, 0, 0, 0.9);
 	backdrop-filter: blur(10px);
@@ -974,6 +984,11 @@ h1 {
     font-size: 1.1em;
   }
 }
+/* Style spécifique pour la page backoffice */
+.backoffice-page .footer {
+  margin-top: 70px;
+}
+
 /* Responsive pour mobile - masquer les flèches sur petit écran */
 @media (max-width: 768px) {
   .step-arrow, .step-arrow-down {
@@ -991,8 +1006,4 @@ h1 {
   .step {
     margin: 10px 0;
   }
-}
-h2 {
-color: white;	
-
 }
