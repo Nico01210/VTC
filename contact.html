@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <title>Contact</title>
 </head>
 <body class="contact-page">
@@ -97,6 +97,60 @@
     </footer>
 
     <script>
+        // Initialiser EmailJS
+        emailjs.init("39i-D86yCK0e1JTQy"); // Votre clé publique EmailJS
+        
+        // Gérer l'envoi du formulaire
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Envoi en cours...';
+            submitBtn.disabled = true;
+            
+            // Récupérer les données du formulaire
+            const formData = {
+                nom: document.getElementById('nom').value,
+                prenom: document.getElementById('prenom').value,
+                telephone: document.getElementById('telephone').value,
+                email: document.getElementById('email').value,
+                objet: document.getElementById('objet').value,
+                message: document.getElementById('message').value
+            };
+            
+            // VERSION EMAILJS RÉELLE - ACTIVE
+            emailjs.send("service_6fc2p7p", "template_xeuhdsp", formData)
+                .then(function(response) {
+                    alert('Message envoyé avec succès !');
+                    document.getElementById('contactForm').reset();
+                    submitBtn.textContent = '✅ Message envoyé !';
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }, 3000);
+                })
+                .catch(function(error) {
+                    alert('Erreur lors de l\'envoi du message. Veuillez réessayer.');
+                    console.error('Erreur EmailJS:', error);
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                });
+            
+            /* VERSION TEST (désactivée) :
+            console.log('Données du formulaire:', formData);
+            setTimeout(() => {
+                alert('TEST : Message traité avec succès !\nDonnées envoyées : ' + JSON.stringify(formData, null, 2));
+                document.getElementById('contactForm').reset();
+                submitBtn.textContent = '✅ Message envoyé !';
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }, 3000);
+            }, 2000);
+            */
+        });
+        
         // JavaScript pour gérer l'effet de scroll de la navbar
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar');
