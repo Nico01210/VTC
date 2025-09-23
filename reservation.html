@@ -65,7 +65,8 @@ const horaires = ['08:00','09:30','11:00','14:00','16:00','18:00'];
 
 async function fetchAvailability() {
   try {
-    const res = await fetch('http://localhost:3000/availability');
+  const API_URL = 'https://vtc-l3c5.onrender.com';
+const res = await fetch(`${API_URL}/availability`);
     availability = await res.json();
     updateCalendar();
   } catch(err) {
