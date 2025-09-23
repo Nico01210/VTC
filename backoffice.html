@@ -1,81 +1,13 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<script>
-  // VÉRIFICATION IMMÉDIATE - AVANT TOUT CHARGEMENT
-  (function() {
-    const hasSessionAuth = sessionStorage.getItem('vtcBackofficeAuth') === 'true';
-    
-    console.log('Vérification immédiate - Session:', hasSessionAuth);
-    
-    // Si aucune authentification valide, redirection immédiate
-    if (!hasSessionAuth) {
-      console.log('Accès non autorisé - redirection immédiate vers login');
-      window.location.replace('/login.html');
-      return;
-    }
-  })();
-</script>
-<script>
-  // Vérification de l'authentification
-  function checkAuthentication() {
-    const isSessionAuth = sessionStorage.getItem('vtcBackofficeAuth') === 'true';
-    
-    console.log('Vérification auth - Session:', isSessionAuth);
-    
-    if (!isSessionAuth) {
-      console.log('Accès non autorisé - redirection vers login');
-      window.location.replace('/login.html');
-      return false;
-    }
-    return true;
-  }
-
-  // Fonction de déconnexion
-  function logout() {
-    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
-      // Nettoyage session
-      sessionStorage.removeItem('vtcBackofficeAuth');
-      sessionStorage.removeItem('vtcBackofficeUser');
-      
-      // Redirection
-      window.location.replace('/login.html');
-    }
-  }
-
-  // Vérification IMMÉDIATE au chargement
-  if (!checkAuthentication()) {
-    throw new Error('Accès non autorisé - redirection en cours');
-  } else {
-    // Authentification OK - afficher le contenu
-    document.addEventListener('DOMContentLoaded', function() {
-      const loadingElement = document.getElementById('authLoading');
-      if (loadingElement) {
-        loadingElement.style.display = 'none';
-      }
-      document.body.classList.add('authenticated');
-    });
-  }
-
-  // Vérification continue toutes les 10 secondes
-  setInterval(function() {
-    if (!checkAuthentication()) {
-      window.location.replace('/login.html');
-    }
-  }, 10000);
-</script>
-</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Backoffice - Gestion des disponibilités</title>
   <link rel="stylesheet" href="style.css">
+
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body { 
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
       background-image: url('images/lisbonne2.jpg');
@@ -85,14 +17,10 @@
       background-attachment: fixed;
       min-height: 100vh;
       padding: 20px;
-      /* Masquer le contenu par défaut jusqu'à authentification */
-      display: none;
+      display: none; /* masqué jusqu'à authentification */
     }
-    
-    body.authenticated {
-      display: block;
-    }
-    
+    body.authenticated { display: block; }
+
     .auth-loading {
       display: flex;
       justify-content: center;
@@ -105,26 +33,8 @@
       font-size: 1.5rem;
       font-weight: 600;
     }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 30px;
-      color: white;
-    }
-    
-    .header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      margin: 50px;
-    }
-    
-    .header p {
-      font-size: 22px;
-      opacity: 0.9;
-    }
-    
+
+    /* --- Calendar & buttons styles --- */
     .calendar-admin { 
       background: rgba(255,255,255,0.95); 
       padding: 40px; 
@@ -135,15 +45,7 @@
       margin: 100px auto 0 auto;
       border: 1px solid rgba(255,255,255,0.2);
     }
-    
-    .controls {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 30px;
-      justify-content: center;
-      flex-wrap: wrap;
-    }
-    
+    .controls { display: flex; gap: 15px; margin-bottom: 30px; justify-content: center; flex-wrap: wrap; }
     .month-select { 
       padding: 12px 20px;
       font-size: 16px;
@@ -156,291 +58,90 @@
       transition: all 0.3s ease;
       min-width: 140px;
     }
-    
-    .month-select:hover {
-      border-color: #FFB6A3;
-      transform: translateY(-1px);
-    }
-    
-    .month-select:focus {
-      outline: none;
-      border-color: #FFB6A3;
-      box-shadow: 0 0 0 3px rgba(255,182,163,0.1);
-    }
-    
-    .calendar-header {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-    
-    .day-header {
-      padding: 12px 0;
-      text-align: center;
-      font-weight: 600;
-      color: #4a5568;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    
-    .calendar-grid { 
-      display: grid; 
-      grid-template-columns: repeat(7, 1fr); 
-      gap: 12px;
-      margin-bottom: 30px;
-    }
-    
+    .month-select:hover { border-color: #FFB6A3; transform: translateY(-1px); }
+    .calendar-header { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 15px; }
+    .day-header { padding: 12px 0; text-align: center; font-weight: 600; color: #4a5568; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-bottom: 30px; }
     .day-admin { 
-      padding: 24px 0; 
-      border-radius: 12px; 
-      text-align: center; 
-      cursor: pointer; 
-      font-weight: 600;
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-      position: relative;
-      min-height: 80px;
-      min-width: 80px;
-      width: 80px;
-      height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      padding: 24px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; font-size: 1.2rem;
+      transition: all 0.3s ease; position: relative; min-height: 80px; min-width: 80px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;
     }
-    
-    .day-admin:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-    }
-    
-    .day-admin.available { 
-      background: linear-gradient(135deg, #25D366, #20c358);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(37,211,102,0.3);
-    }
-    
-    .day-admin.unavailable { 
-      background: linear-gradient(135deg, #f7fafc, #edf2f7);
-      color: #a0aec0;
-      border: 2px dashed #e2e8f0;
-    }
-    
-    .day-admin.selected {
-      transform: scale(1.1);
-      box-shadow: 0 0 0 3px #FFB6A3;
-    }
-    
-    .day-admin.next-highlighted {
-      border: 3px solid #FFB6A3;
-      box-shadow: 0 0 0 2px rgba(255, 182, 163, 0.3);
-      animation: pulse-pink 2s infinite;
-    }
-    
-    @keyframes pulse-pink {
-      0% { box-shadow: 0 0 0 2px rgba(255, 182, 163, 0.3); }
-      50% { box-shadow: 0 0 0 4px rgba(255, 182, 163, 0.6); }
-      100% { box-shadow: 0 0 0 2px rgba(255, 182, 163, 0.3); }
-    }
-    
-    .horaire-section {
-      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-      padding: 25px;
-      border-radius: 16px;
-      margin-bottom: 25px;
-      border: 1px solid #dee2e6;
-    }
-    
-    .horaire-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #2d3748;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    
-    .horaire-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-      gap: 10px;
-    }
-    
-    .horaire-btn { 
-      padding: 12px 8px;
-      border-radius: 10px; 
-      border: none; 
-      cursor: pointer; 
-      font-size: 14px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      text-align: center;
-    }
-    
-    .horaire-btn:hover {
-      transform: translateY(-2px);
-    }
-    
-    .horaire-btn.active { 
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      color: #fff;
-      box-shadow: 0 4px 15px rgba(0,123,255,0.3);
-    }
-    
-    .horaire-btn.inactive { 
-      background: #fff;
-      color: #6c757d;
-      border: 2px solid #e9ecef;
-    }
-    
-    .horaire-btn.inactive:hover {
-      background: #f8f9fa;
-      border-color: #FFB6A3;
-    }
-    
-    .save-btn { 
-      width: 100%;
-      margin-top: 30px; 
-      padding: 16px 32px;
-      background: linear-gradient(135deg, #FFB6A3, #ff9f85);
-      color: #fff;
-      border: none; 
-      border-radius: 12px; 
-      cursor: pointer; 
-      font-size: 18px;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 20px rgba(255,182,163,0.4);
-    }
-    
-    .save-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(255,182,163,0.5);
-      background: linear-gradient(135deg, #ff9f85, #FFB6A3);
-    }
-    
-    .save-btn:active {
-      transform: translateY(0);
-    }
-    
-    .legend {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin-bottom: 25px;
-      flex-wrap: wrap;
-    }
-    
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.9rem;
-      color: #4a5568;
-    }
-    
-    .legend-color {
-      width: 20px;
-      height: 20px;
-      border-radius: 6px;
-    }
-    
-    .legend-available {
-      background: linear-gradient(135deg, #25D366, #20c358);
-    }
-    
-    .legend-unavailable {
-      background: linear-gradient(135deg, #f7fafc, #edf2f7);
-      border: 2px dashed #e2e8f0;
-    }
-    
+    .day-admin:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+    .day-admin.available { background: linear-gradient(135deg, #25D366, #20c358); color: #fff; box-shadow: 0 4px 15px rgba(37,211,102,0.3); }
+    .day-admin.unavailable { background: linear-gradient(135deg, #f7fafc, #edf2f7); color: #a0aec0; border: 2px dashed #e2e8f0; }
+    .day-admin.selected { transform: scale(1.1); box-shadow: 0 0 0 3px #FFB6A3; }
+
+    .horaire-section { background: linear-gradient(135deg, #f8f9fa, #e9ecef); padding: 25px; border-radius: 16px; margin-bottom: 25px; border: 1px solid #dee2e6; }
+    .horaire-title { font-size: 1.3rem; font-weight: 600; color: #2d3748; margin-bottom: 20px; text-align: center; }
+    .horaire-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 10px; }
+    .horaire-btn { padding: 12px 8px; border-radius: 10px; border: none; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease; text-align: center; }
+    .horaire-btn.active { background: linear-gradient(135deg, #007bff, #0056b3); color: #fff; box-shadow: 0 4px 15px rgba(0,123,255,0.3); }
+    .horaire-btn.inactive { background: #fff; color: #6c757d; border: 2px solid #e9ecef; }
+    .save-btn { width: 100%; margin-top: 30px; padding: 16px 32px; background: linear-gradient(135deg, #FFB6A3, #ff9f85); color: #fff; border: none; border-radius: 12px; cursor: pointer; font-size: 18px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 6px 20px rgba(255,182,163,0.4); }
+
     @media (max-width: 768px) {
-      .calendar-admin {
-        padding: 25px 20px;
-        margin: 0 10px;
-      }
-      
-      .header h1 {
-        font-size: 2rem;
-      }
-      
-      .controls {
-        flex-direction: column;
-        align-items: center;
-      }
-      
-      .month-select {
-        width: 100%;
-        max-width: 200px;
-      }
-      
-      .horaire-grid {
-        grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
-        gap: 8px;
-      }
+      .calendar-admin { padding: 25px 20px; margin: 0 10px; }
+      .controls { flex-direction: column; align-items: center; }
+      .month-select { width: 100%; max-width: 200px; }
+      .horaire-grid { grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; }
     }
   </style>
+
+  <script>
+    // --- AUTHENTIFICATION IMMEDIATE ---
+    (function() {
+      if (sessionStorage.getItem('vtcBackofficeAuth') !== 'true') {
+        window.location.replace('/login.html');
+      } else {
+        document.addEventListener('DOMContentLoaded', () => {
+          document.body.classList.add('authenticated');
+          const loading = document.getElementById('authLoading');
+          if(loading) loading.style.display = 'none';
+        });
+      }
+    })();
+    
+    function logout() {
+      if(confirm('Êtes-vous sûr de vouloir vous déconnecter ?')){
+        sessionStorage.removeItem('vtcBackofficeAuth');
+        sessionStorage.removeItem('vtcBackofficeUser');
+        window.location.replace('/login.html');
+      }
+    }
+  </script>
 </head>
-<body class="backoffice-page">
-  <!-- Message de chargement de l'authentification -->
-  <div id="authLoading" class="auth-loading">
-    🔐 Vérification de l'authentification...
-  </div>
-      <!--- NAVBAR -->
-    <nav class="navbar">
-        <div class="navbar-container">
-            <div class="navbar-brand">VTC Premium</div>
-            <ul class="navbar-menu">
-                <li><a href="/index.html" class="navbar-link">Accueil</a></li>
-                 <li><a href="/apropos.html" class="navbar-link">À propos</a></li>
-                <li><a href="/services.html" class="navbar-link">Nos services</a></li>
-                 <li><a href="/reservation.html" class="navbar-link">Réservations</a></li>
-                <li><a href="/avis.html" class="navbar-link">Avis clients</a></li>
-                <li><a href="/contact.html" class="navbar-link">Contact</a></li>
-            </ul>
-            <div class="navbar-spacer"></div>
-        </div>
-    </nav>
+
+<body>
+  <div id="authLoading" class="auth-loading">🔐 Vérification de l'authentification...</div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="navbar-brand">VTC Premium</div>
+      <ul class="navbar-menu">
+        <li><a href="/index.html" class="navbar-link">Accueil</a></li>
+        <li><a href="/apropos.html" class="navbar-link">À propos</a></li>
+        <li><a href="/services.html" class="navbar-link">Nos services</a></li>
+        <li><a href="/reservation.html" class="navbar-link">Réservations</a></li>
+        <li><a href="/avis.html" class="navbar-link">Avis clients</a></li>
+        <li><a href="/contact.html" class="navbar-link">Contact</a></li>
+      </ul>
+      <div class="navbar-spacer"></div>
+      <button onclick="logout()">🚪 Déconnexion</button>
+    </div>
+  </nav>
 
   <div class="header">
-    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto;">
-      <div>
-        <h1>🚗 VTC Premium</h1>
-        <p>Backoffice - Gestion des disponibilités</p>
-      </div>
-      <button onclick="logout()" style="
-        padding: 10px 20px;
-        background: linear-gradient(135deg, #e53e3e, #c53030);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
-      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-        🚪 Déconnexion
-      </button>
-    </div>
+    <h1>🚗 VTC Premium</h1>
+    <p>Backoffice - Gestion des disponibilités</p>
   </div>
-  
+
   <div class="calendar-admin">
     <div class="controls">
       <select id="month-select" class="month-select"></select>
       <select id="year-select" class="month-select"></select>
     </div>
-    
-    <div class="legend">
-      <div class="legend-item">
-        <div class="legend-color legend-available"></div>
-        <span>Jours disponibles</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-color legend-unavailable"></div>
-        <span>Jours non configurés</span>
-      </div>
-    </div>
-    
+
     <div class="calendar-header">
       <div class="day-header">Lun</div>
       <div class="day-header">Mar</div>
@@ -450,156 +151,120 @@
       <div class="day-header">Sam</div>
       <div class="day-header">Dim</div>
     </div>
-    
+
     <div id="calendar-admin-grid" class="calendar-grid"></div>
-    
+
     <div id="horaire-admin" class="horaire-section" style="display: none;">
       <div class="horaire-title"></div>
       <div class="horaire-grid"></div>
     </div>
-    
+
     <button class="save-btn" onclick="saveAvailability()">💾 Enregistrer les modifications</button>
   </div>
 
   <script>
-const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-const horaires = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
-const currentYear = new Date().getFullYear();
-let selectedMonth = new Date().getMonth();
-let selectedYear = currentYear;
-let selectedDay = null;
+    // --- CONFIG ---
+    const API_URL = 'https://vtc-l3c5.onrender.com'; // <-- remplacer par ton URL Render
+    const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+    const horaires = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
+    const currentYear = new Date().getFullYear();
+    let selectedMonth = new Date().getMonth();
+    let selectedYear = currentYear;
+    let selectedDay = null;
+    let availability = {};
 
-let availability = {}; // stocké sur serveur
+    async function fetchAvailability(){
+      const res = await fetch(`${API_URL}/availability`);
+      availability = await res.json();
+      renderAdminCalendar();
+    }
 
-async function fetchAvailability(){
-  const res = await fetch('http://localhost:3000/availability');
-  availability = await res.json();
-  renderAdminCalendar();
-}
+    async function saveAvailability(){
+      await fetch(`${API_URL}/availability`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(availability)
+      });
+      const btn=document.querySelector('.save-btn');
+      const original=btn.textContent;
+      btn.textContent='✅ Sauvegardé !';
+      setTimeout(()=>btn.textContent=original,2000);
+    }
 
-function fillSelectors(){
-  const monthSelect = document.getElementById('month-select');
-  const yearSelect = document.getElementById('year-select');
-  monthSelect.innerHTML=''; yearSelect.innerHTML='';
-  for(let m=0;m<12;m++){
-    const opt=document.createElement('option');
-    opt.value=m; opt.textContent=monthNames[m];
-    if(m===selectedMonth) opt.selected=true;
-    monthSelect.appendChild(opt);
-  }
-  for(let y=currentYear;y<=currentYear+2;y++){
-    const opt=document.createElement('option');
-    opt.value=y; opt.textContent=y;
-    if(y===selectedYear) opt.selected=true;
-    yearSelect.appendChild(opt);
-  }
-  monthSelect.onchange=()=>{selectedMonth=parseInt(monthSelect.value); renderAdminCalendar();}
-  yearSelect.onchange=()=>{selectedYear=parseInt(yearSelect.value); renderAdminCalendar();}
-}
-
-function getActiveHoraires(year,month,day){
-  return (availability[year] && availability[year][month] && availability[year][month][day]) ? availability[year][month][day] : [];
-}
-
-function renderAdminCalendar(){
-  const grid=document.getElementById('calendar-admin-grid');
-  grid.innerHTML='';
-  document.getElementById('horaire-admin').style.display='none';
-  selectedDay=null;
-  const daysInMonth = new Date(selectedYear, selectedMonth+1,0).getDate();
-  const firstDay = new Date(selectedYear,selectedMonth,1).getDay();
-  const startDay = firstDay===0?6:firstDay-1;
-  for(let i=0;i<startDay;i++) grid.appendChild(document.createElement('div'));
-  for(let day=1;day<=daysInMonth;day++){
-    const activeHoraires = getActiveHoraires(selectedYear,selectedMonth,day);
-    const dayDiv=document.createElement('div');
-    dayDiv.textContent=day;
-    dayDiv.className='day-admin '+(activeHoraires.length?'available':'unavailable');
-    dayDiv.onclick=()=>showHoraires(day);
-    grid.appendChild(dayDiv);
-  }
-}
-
-function showHoraires(day){
-  selectedDay=day;
-  const horaireDiv=document.getElementById('horaire-admin');
-  const titleDiv=horaireDiv.querySelector('.horaire-title');
-  const gridDiv=horaireDiv.querySelector('.horaire-grid');
-  titleDiv.textContent=`📅 Horaires pour le ${day} ${monthNames[selectedMonth]} ${selectedYear}`;
-  gridDiv.innerHTML='';
-  const activeHoraires=getActiveHoraires(selectedYear,selectedMonth,day);
-  horaires.forEach(h=>{
-    const btn=document.createElement('button');
-    btn.textContent=h;
-    btn.className='horaire-btn '+(activeHoraires.includes(h)?'active':'inactive');
-    btn.onclick=()=>toggleHoraire(day,h);
-    gridDiv.appendChild(btn);
-  });
-  horaireDiv.style.display='block';
-}
-
-function toggleHoraire(day,horaire){
-  if(!availability[selectedYear]) availability[selectedYear]={};
-  if(!availability[selectedYear][selectedMonth]) availability[selectedYear][selectedMonth]={};
-  if(!availability[selectedYear][selectedMonth][day]) availability[selectedYear][selectedMonth][day]=[];
-  const arr = availability[selectedYear][selectedMonth][day];
-  if(arr.includes(horaire)) availability[selectedYear][selectedMonth][day]=arr.filter(h=>h!==horaire);
-  else arr.push(horaire);
-  showHoraires(day);
-}
-
-async function saveAvailability(){
-  await fetch('http://localhost:3000/availability',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(availability)
-  });
-  const btn=document.querySelector('.save-btn');
-  const original=btn.textContent;
-  btn.textContent='✅ Sauvegardé !';
-  setTimeout(()=>btn.textContent=original,2000);
-}
-
-fillSelectors();
-fetchAvailability();
-</script>
-  
-  <script>
-    window.addEventListener('scroll', function() {
-      const navbar = document.querySelector('.navbar');
-      if (window.scrollY > 50) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
+    function fillSelectors(){
+      const monthSelect = document.getElementById('month-select');
+      const yearSelect = document.getElementById('year-select');
+      monthSelect.innerHTML=''; yearSelect.innerHTML='';
+      for(let m=0;m<12;m++){
+        const opt=document.createElement('option');
+        opt.value=m; opt.textContent=monthNames[m];
+        if(m===selectedMonth) opt.selected=true;
+        monthSelect.appendChild(opt);
       }
-    });
+      for(let y=currentYear;y<=currentYear+2;y++){
+        const opt=document.createElement('option');
+        opt.value=y; opt.textContent=y;
+        if(y===selectedYear) opt.selected=true;
+        yearSelect.appendChild(opt);
+      }
+      monthSelect.onchange=()=>{selectedMonth=parseInt(monthSelect.value); renderAdminCalendar();}
+      yearSelect.onchange=()=>{selectedYear=parseInt(yearSelect.value); renderAdminCalendar();}
+    }
+
+    function getActiveHoraires(year,month,day){
+      return (availability[year] && availability[year][month] && availability[year][month][day]) ? availability[year][month][day] : [];
+    }
+
+    function renderAdminCalendar(){
+      const grid=document.getElementById('calendar-admin-grid');
+      grid.innerHTML='';
+      document.getElementById('horaire-admin').style.display='none';
+      selectedDay=null;
+      const daysInMonth = new Date(selectedYear, selectedMonth+1,0).getDate();
+      const firstDay = new Date(selectedYear,selectedMonth,1).getDay();
+      const startDay = firstDay===0?6:firstDay-1;
+      for(let i=0;i<startDay;i++) grid.appendChild(document.createElement('div'));
+      for(let day=1;day<=daysInMonth;day++){
+        const activeHoraires = getActiveHoraires(selectedYear,selectedMonth,day);
+        const dayDiv=document.createElement('div');
+        dayDiv.textContent=day;
+        dayDiv.className='day-admin '+(activeHoraires.length?'available':'unavailable');
+        dayDiv.addEventListener('click',()=>showHoraires(day));
+        grid.appendChild(dayDiv);
+      }
+    }
+
+    function showHoraires(day){
+      selectedDay=day;
+      const horaireDiv=document.getElementById('horaire-admin');
+      const titleDiv=horaireDiv.querySelector('.horaire-title');
+      const gridDiv=horaireDiv.querySelector('.horaire-grid');
+      titleDiv.textContent=`📅 Horaires pour le ${day} ${monthNames[selectedMonth]} ${selectedYear}`;
+      gridDiv.innerHTML='';
+      const activeHoraires=getActiveHoraires(selectedYear,selectedMonth,day);
+      horaires.forEach(h=>{
+        const btn=document.createElement('button');
+        btn.textContent=h;
+        btn.className='horaire-btn '+(activeHoraires.includes(h)?'active':'inactive');
+        btn.addEventListener('click',()=>toggleHoraire(day,h));
+        gridDiv.appendChild(btn);
+      });
+      horaireDiv.style.display='block';
+    }
+
+    function toggleHoraire(day,horaire){
+      if(!availability[selectedYear]) availability[selectedYear]={};
+      if(!availability[selectedYear][selectedMonth]) availability[selectedYear][selectedMonth]={};
+      if(!availability[selectedYear][selectedMonth][day]) availability[selectedYear][selectedMonth][day]=[];
+      const arr = availability[selectedYear][selectedMonth][day];
+      if(arr.includes(horaire)) availability[selectedYear][selectedMonth][day]=arr.filter(h=>h!==horaire);
+      else arr.push(horaire);
+      showHoraires(day);
+    }
+
+    fillSelectors();
+    fetchAvailability();
   </script>
-      <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-logo">
-                <h2>VTC Premium</h2>
-            </div>
-            
-            <div class="footer-contact">
-                <div class="contact-info">
-                    <span>📞 +33 6 12 34 56 78</span>
-                    <span>✉️ Stephan.vtc@gmail.com</span>
-                    <span>📍 Lisbonne, Portugal</span>
-                </div>
-            </div>
-            
-            <div class="footer-icons">
-                <img src="/images/insta.png" alt="insta_icon">
-                <img src="/images/FB.webp" alt="fb_icon">
-                <img src="/images/twitter.png" alt="twitter_icon">
-                <img src="/images/snapchat.webp" alt="snap_icon">
-                <img src="/images/icons8-linkedin-94.png" alt="lk_icon">
-            </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>Copyright 2025 Nicolas VTC. Tous droits réservés.</p>
-        </div>
-    </footer>
+
 </body>
 </html>
