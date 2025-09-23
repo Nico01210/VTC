@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://api.emailjs.com https://vtc-l3c5.onrender.com;">
   <title>Backoffice - Gestion des disponibilités</title>
   <link rel="stylesheet" href="style.css">
 
@@ -176,12 +177,17 @@
     async function fetchAvailability(){
       try {
         console.log('🔄 Chargement des disponibilités depuis:', API_URL);
+        
+        // Test de connectivité simple
+        console.log('🌐 Test de connectivité...');
+        
         const response = await fetch(`${API_URL}/availability`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json'
-          }
+          },
+          mode: 'cors' // Explicitement spécifier le mode CORS
         });
         
         if (!response.ok) {
@@ -195,6 +201,17 @@
       } catch (error) {
         console.error('❌ Erreur lors du chargement des disponibilités:', error);
         
+        // Test de connectivité basique
+        if (error.message === 'Failed to fetch') {
+          console.log('🔍 Test de connectivité basique vers le serveur...');
+          try {
+            const testResponse = await fetch(API_URL, { mode: 'no-cors' });
+            console.log('✅ Serveur accessible, problème de CORS détecté');
+          } catch (testError) {
+            console.log('❌ Serveur non accessible:', testError.message);
+          }
+        }
+        
         // Afficher une notification d'erreur à l'utilisateur
         const errorDiv = document.createElement('div');
         errorDiv.style.cssText = `
@@ -207,7 +224,9 @@
         errorDiv.innerHTML = `
           <div>❌ Erreur de connexion au serveur</div>
           <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.9;">
-            ${error.message || 'Vérifiez votre URL API'}
+            ${error.message === 'Failed to fetch' ? 
+              'Problème de CORS ou serveur inaccessible' : 
+              error.message || 'Vérifiez votre connexion'}
           </div>
         `;
         document.body.appendChild(errorDiv);
@@ -235,8 +254,12 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Accept': 'application/json'
+            'Accept': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type'
           },
+          mode: 'cors',
           body: JSON.stringify(availability)
         });
         
@@ -266,6 +289,22 @@
         btn.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
         btn.disabled = false;
         
+        // Diagnostic spécifique pour "Failed to fetch"
+        let errorMessage = error.message;
+        if (error.message === 'Failed to fetch') {
+          errorMessage = 'Problème de CORS ou serveur inaccessible. Vérifiez que votre backend autorise les requêtes CORS.';
+          
+          // Test de connectivité
+          console.log('🔍 Test de connectivité lors de la sauvegarde...');
+          try {
+            const testResponse = await fetch(API_URL, { mode: 'no-cors' });
+            console.log('ℹ️ Le serveur répond mais refuse les requêtes CORS');
+          } catch (testError) {
+            console.log('❌ Serveur complètement inaccessible');
+            errorMessage = 'Serveur inaccessible. Vérifiez que votre backend Render est démarré.';
+          }
+        }
+        
         // Afficher une notification d'erreur détaillée
         const errorDiv = document.createElement('div');
         errorDiv.style.cssText = `
@@ -273,12 +312,12 @@
           background: linear-gradient(135deg, #dc3545, #c82333);
           color: white; padding: 15px 20px; border-radius: 12px;
           box-shadow: 0 6px 20px rgba(220,53,69,0.4);
-          font-weight: 600; max-width: 400px;
+          font-weight: 600; max-width: 450px;
         `;
         errorDiv.innerHTML = `
           <div>❌ Échec de la sauvegarde</div>
           <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.9;">
-            ${error.message || 'Vérifiez votre connexion et l\'URL API'}
+            ${errorMessage}
           </div>
         `;
         document.body.appendChild(errorDiv);
@@ -287,7 +326,7 @@
           errorDiv.remove();
           btn.textContent = original;
           btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
-        }, 5000);
+        }, 7000);
       }
     }
 
