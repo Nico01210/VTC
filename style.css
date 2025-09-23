@@ -157,6 +157,12 @@ body:not(.home-page) {
 	backdrop-filter: none;
 	box-shadow: none;
 }
+/* Navbar transparente pour la page login */
+.login-page .navbar {
+	background: transparent;
+	backdrop-filter: none;
+	box-shadow: none;
+}
 /* Navbar transparente pour la page about */
 .about-page .navbar {
 	background: transparent;
