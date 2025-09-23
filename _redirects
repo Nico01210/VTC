@@ -1,0 +1,5 @@
+# Redirection du backoffice vers login si pas d'authentification
+# (sera géré par JavaScript mais ajout d'une couche de sécurité)
+
+# Toutes les autres pages restent accessibles
+/*    /index.html   200

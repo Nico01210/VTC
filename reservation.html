@@ -30,6 +30,7 @@
     Cliquez sur un jour disponible pour réserver votre trajet via WhatsApp.
   </p>
 
+  
   <!-- Calendrier stylé -->
   <div style="display:inline-block; background:rgba(255,255,255,0.95); padding:40px; border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,0.15); max-width:90vw; width:500px;">
     <!-- Sélecteur de mois/année -->
@@ -56,96 +57,85 @@
 </section>
 
 <script>
-  let currentMonth = new Date().getMonth();
-  let currentYear = new Date().getFullYear();
-  const monthNames = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
-  const horaires = ['08:00', '09:30', '11:00', '14:00', '16:00', '18:00'];
-  // Récupérer les disponibilités du backoffice
-  let availability = JSON.parse(localStorage.getItem('availability')) || {};
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+const monthNames = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
+let availability = {}; // stockera les disponibilités depuis le serveur
+const horaires = ['08:00','09:30','11:00','14:00','16:00','18:00'];
 
-  function getActiveHoraires(year, month, day) {
-    return (availability[year] && availability[year][month] && availability[year][month][day]) ? availability[year][month][day] : [];
-  }
-
-  function updateCalendar() {
-    const calendar = document.getElementById('mini-calendar');
-    const monthYearDisplay = document.getElementById('month-year');
-    
-    // Mettre à jour l'affichage du mois/année
-    monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
-    
-    // Vider le calendrier
-    calendar.innerHTML = '';
-    
-    // Calculer le premier jour du mois (0=dimanche, 1=lundi, etc.)
-    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    
-    // Ajuster pour que lundi = 0
-    const startDay = firstDay === 0 ? 6 : firstDay - 1;
-    
-    // Ajouter des cases vides pour les jours précédents
-    for(let i = 0; i < startDay; i++) {
-      const emptyBox = document.createElement('div');
-      calendar.appendChild(emptyBox);
-    }
-    
-    // Ajouter les jours du mois
-    for(let day = 1; day <= daysInMonth; day++) {
-      const activeHoraires = getActiveHoraires(currentYear, currentMonth, day);
-      const dayBox = document.createElement('div');
-      dayBox.textContent = day;
-      dayBox.style.padding = '15px 0';
-      dayBox.style.borderRadius = '8px';
-      dayBox.style.fontWeight = 'bold';
-      dayBox.style.color = 'white';
-      dayBox.style.userSelect = 'none';
-      dayBox.style.fontSize = '16px';
-      dayBox.style.minHeight = '40px';
-      dayBox.style.display = 'flex';
-      dayBox.style.alignItems = 'center';
-      dayBox.style.justifyContent = 'center';
-
-      if(activeHoraires.length) {
-        dayBox.style.backgroundColor = '#25D366'; // vert dispo
-        dayBox.style.cursor = 'pointer';
-        dayBox.addEventListener('mouseenter', () => dayBox.style.backgroundColor = '#1ebe5d');
-        dayBox.addEventListener('mouseleave', () => dayBox.style.backgroundColor = '#25D366');
-        dayBox.addEventListener('click', () => {
-          // Affiche les horaires disponibles sous forme de prompt
-          let horaire = prompt('Horaires disponibles pour ce jour :\n(Veuillez choisir uniquement parmi ces créneaux)\n\n' + activeHoraires.join(', '), activeHoraires[0]);
-          if(horaire && activeHoraires.includes(horaire)) {
-            const selectedMonth = monthNames[currentMonth];
-            const message = `Bonjour Stephan, seriez vous disponible pour une course le ${day} ${selectedMonth} ${currentYear} à ${horaire} ?`;
-            const encodedMessage = encodeURIComponent(message);
-            window.open(`https://wa.me/33600000000?text=${encodedMessage}`, '_blank');
-          } else if(horaire) {
-            alert('Veuillez choisir un créneau parmi : ' + activeHoraires.join(', '));
-          }
-        });
-      } else {
-        dayBox.style.backgroundColor = '#ccc'; // gris non dispo
-      }
-
-      calendar.appendChild(dayBox);
-    }
-  }
-
-  function changeMonth(direction) {
-    currentMonth += direction;
-    if(currentMonth > 11) {
-      currentMonth = 0;
-      currentYear++;
-    } else if(currentMonth < 0) {
-      currentMonth = 11;
-      currentYear--;
-    }
+async function fetchAvailability() {
+  try {
+    const res = await fetch('http://localhost:3000/availability');
+    availability = await res.json();
     updateCalendar();
+  } catch(err) {
+    console.error('Erreur récupération disponibilités', err);
   }
+}
 
-  // Initialiser le calendrier
+function getActiveHoraires(year, month, day) {
+  return (availability[year] && availability[year][month] && availability[year][month][day]) ? availability[year][month][day] : [];
+}
+
+function updateCalendar() {
+  const calendar = document.getElementById('mini-calendar');
+  const monthYearDisplay = document.getElementById('month-year');
+  monthYearDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+  calendar.innerHTML = '';
+
+  const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const startDay = firstDay === 0 ? 6 : firstDay - 1;
+
+  for(let i=0;i<startDay;i++) calendar.appendChild(document.createElement('div'));
+
+  for(let day=1;day<=daysInMonth;day++){
+    const activeHoraires = getActiveHoraires(currentYear,currentMonth,day);
+    const dayBox = document.createElement('div');
+    dayBox.textContent = day;
+    dayBox.style.padding = '15px 0';
+    dayBox.style.borderRadius = '8px';
+    dayBox.style.fontWeight = 'bold';
+    dayBox.style.color = 'white';
+    dayBox.style.userSelect = 'none';
+    dayBox.style.fontSize = '16px';
+    dayBox.style.minHeight = '40px';
+    dayBox.style.display = 'flex';
+    dayBox.style.alignItems = 'center';
+    dayBox.style.justifyContent = 'center';
+
+    if(activeHoraires.length){
+      dayBox.style.backgroundColor = '#25D366';
+      dayBox.style.cursor = 'pointer';
+      dayBox.addEventListener('mouseenter',()=>dayBox.style.backgroundColor='#1ebe5d');
+      dayBox.addEventListener('mouseleave',()=>dayBox.style.backgroundColor='#25D366');
+      dayBox.addEventListener('click',()=>{
+        let horaire = prompt('Horaires disponibles pour ce jour :\n' + activeHoraires.join(', '), activeHoraires[0]);
+        if(horaire && activeHoraires.includes(horaire)){
+          const selectedMonth = monthNames[currentMonth];
+          const message = `Bonjour Stephan, seriez vous disponible pour une course le ${day} ${selectedMonth} ${currentYear} à ${horaire} ?`;
+          window.open(`https://wa.me/33600000000?text=${encodeURIComponent(message)}`,'_blank');
+        } else if(horaire){
+          alert('Veuillez choisir un créneau parmi : ' + activeHoraires.join(', '));
+        }
+      });
+    } else {
+      dayBox.style.backgroundColor='#ccc';
+    }
+    calendar.appendChild(dayBox);
+  }
+}
+
+function changeMonth(direction){
+  currentMonth += direction;
+  if(currentMonth>11){currentMonth=0;currentYear++;}
+  else if(currentMonth<0){currentMonth=11;currentYear--;}
   updateCalendar();
+}
+
+fetchAvailability();
 </script>
+
   <!-- Footer -->
 
     <footer class="footer">

@@ -1,15 +1,68 @@
  <!DOCTYPE html>
 <html lang="fr">
 <head>
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  const netlifyIdentity = window.netlifyIdentity;
-  netlifyIdentity.init();
-
-  // si pas connecté, redirige vers login
-  if (!netlifyIdentity.currentUser()) {
-    window.location.href = '/login.html';
+  // VÉRIFICATION IMMÉDIATE - AVANT TOUT CHARGEMENT
+  (function() {
+    const hasSessionAuth = sessionStorage.getItem('vtcBackofficeAuth') === 'true';
+    
+    console.log('Vérification immédiate - Session:', hasSessionAuth);
+    
+    // Si aucune authentification valide, redirection immédiate
+    if (!hasSessionAuth) {
+      console.log('Accès non autorisé - redirection immédiate vers login');
+      window.location.replace('/login.html');
+      return;
+    }
+  })();
+</script>
+<script>
+  // Vérification de l'authentification
+  function checkAuthentication() {
+    const isSessionAuth = sessionStorage.getItem('vtcBackofficeAuth') === 'true';
+    
+    console.log('Vérification auth - Session:', isSessionAuth);
+    
+    if (!isSessionAuth) {
+      console.log('Accès non autorisé - redirection vers login');
+      window.location.replace('/login.html');
+      return false;
+    }
+    return true;
   }
+
+  // Fonction de déconnexion
+  function logout() {
+    if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+      // Nettoyage session
+      sessionStorage.removeItem('vtcBackofficeAuth');
+      sessionStorage.removeItem('vtcBackofficeUser');
+      
+      // Redirection
+      window.location.replace('/login.html');
+    }
+  }
+
+  // Vérification IMMÉDIATE au chargement
+  if (!checkAuthentication()) {
+    throw new Error('Accès non autorisé - redirection en cours');
+  } else {
+    // Authentification OK - afficher le contenu
+    document.addEventListener('DOMContentLoaded', function() {
+      const loadingElement = document.getElementById('authLoading');
+      if (loadingElement) {
+        loadingElement.style.display = 'none';
+      }
+      document.body.classList.add('authenticated');
+    });
+  }
+
+  // Vérification continue toutes les 10 secondes
+  setInterval(function() {
+    if (!checkAuthentication()) {
+      window.location.replace('/login.html');
+    }
+  }, 10000);
 </script>
 </script>
   <meta charset="UTF-8">
@@ -32,6 +85,25 @@
       background-attachment: fixed;
       min-height: 100vh;
       padding: 20px;
+      /* Masquer le contenu par défaut jusqu'à authentification */
+      display: none;
+    }
+    
+    body.authenticated {
+      display: block;
+    }
+    
+    .auth-loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-image: url('images/lisbonne2.jpg');
+      background-size: cover;
+      background-position: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
     }
     
     .header {
@@ -310,6 +382,10 @@
   </style>
 </head>
 <body class="backoffice-page">
+  <!-- Message de chargement de l'authentification -->
+  <div id="authLoading" class="auth-loading">
+    🔐 Vérification de l'authentification...
+  </div>
       <!--- NAVBAR -->
     <nav class="navbar">
         <div class="navbar-container">
@@ -327,8 +403,25 @@
     </nav>
 
   <div class="header">
-    <h1>🚗 VTC Premium</h1>
-    <p>Backoffice - Gestion des disponibilités</p>
+    <div style="display: flex; justify-content: space-between; align-items: center; max-width: 800px; margin: 0 auto;">
+      <div>
+        <h1>🚗 VTC Premium</h1>
+        <p>Backoffice - Gestion des disponibilités</p>
+      </div>
+      <button onclick="logout()" style="
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #e53e3e, #c53030);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+      " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+        🚪 Déconnexion
+      </button>
+    </div>
   </div>
   
   <div class="calendar-admin">
@@ -369,169 +462,107 @@
   </div>
 
   <script>
-    const monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-    const horaires = ['08:00', '09:00','10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00',
-        '22:00'
-    ];
-    const currentYear = new Date().getFullYear();
-    let selectedMonth = new Date().getMonth();
-    let selectedYear = currentYear;
-    let selectedDay = null;
+const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+const horaires = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
+const currentYear = new Date().getFullYear();
+let selectedMonth = new Date().getMonth();
+let selectedYear = currentYear;
+let selectedDay = null;
 
-    // Structure: { [year]: { [month]: { [day]: [horaires actifs] } } }
-    let availability = JSON.parse(localStorage.getItem('availability')) || {};
+let availability = {}; // stocké sur serveur
 
-    // Remplir les sélecteurs de mois/année
-    function fillSelectors() {
-      const monthSelect = document.getElementById('month-select');
-      const yearSelect = document.getElementById('year-select');
-      monthSelect.innerHTML = '';
-      yearSelect.innerHTML = '';
-      for(let m=0; m<12; m++) {
-        const opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = monthNames[m];
-        if(m === selectedMonth) opt.selected = true;
-        monthSelect.appendChild(opt);
-      }
-      for(let y=currentYear; y<=currentYear+2; y++) {
-        const opt = document.createElement('option');
-        opt.value = y;
-        opt.textContent = y;
-        if(y === selectedYear) opt.selected = true;
-        yearSelect.appendChild(opt);
-      }
-      monthSelect.onchange = () => { selectedMonth = parseInt(monthSelect.value); renderAdminCalendar(); };
-      yearSelect.onchange = () => { selectedYear = parseInt(yearSelect.value); renderAdminCalendar(); };
-    }
+async function fetchAvailability(){
+  const res = await fetch('http://localhost:3000/availability');
+  availability = await res.json();
+  renderAdminCalendar();
+}
 
-    function getActiveHoraires(year, month, day) {
-      return (availability[year] && availability[year][month] && availability[year][month][day]) ? availability[year][month][day] : [];
-    }
+function fillSelectors(){
+  const monthSelect = document.getElementById('month-select');
+  const yearSelect = document.getElementById('year-select');
+  monthSelect.innerHTML=''; yearSelect.innerHTML='';
+  for(let m=0;m<12;m++){
+    const opt=document.createElement('option');
+    opt.value=m; opt.textContent=monthNames[m];
+    if(m===selectedMonth) opt.selected=true;
+    monthSelect.appendChild(opt);
+  }
+  for(let y=currentYear;y<=currentYear+2;y++){
+    const opt=document.createElement('option');
+    opt.value=y; opt.textContent=y;
+    if(y===selectedYear) opt.selected=true;
+    yearSelect.appendChild(opt);
+  }
+  monthSelect.onchange=()=>{selectedMonth=parseInt(monthSelect.value); renderAdminCalendar();}
+  yearSelect.onchange=()=>{selectedYear=parseInt(yearSelect.value); renderAdminCalendar();}
+}
 
-    function renderAdminCalendar() {
-      const grid = document.getElementById('calendar-admin-grid');
-      grid.innerHTML = '';
-      document.getElementById('horaire-admin').style.display = 'none';
-      selectedDay = null;
-      
-      const daysInMonth = new Date(selectedYear, selectedMonth + 1, 0).getDate();
-      const firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
-      const startDay = firstDay === 0 ? 6 : firstDay - 1;
-      
-      // Jours vides au début
-      for(let i=0; i<startDay; i++) {
-        const emptyDiv = document.createElement('div');
-        grid.appendChild(emptyDiv);
-      }
-      
-      // Jours du mois
-      for(let day=1; day<=daysInMonth; day++) {
-        const activeHoraires = getActiveHoraires(selectedYear, selectedMonth, day);
-        const dayDiv = document.createElement('div');
-        dayDiv.textContent = day;
-        dayDiv.className = 'day-admin ' + (activeHoraires.length ? 'available' : 'unavailable');
-        dayDiv.onclick = () => showHoraires(day);
-        grid.appendChild(dayDiv);
-      }
-    }
+function getActiveHoraires(year,month,day){
+  return (availability[year] && availability[year][month] && availability[year][month][day]) ? availability[year][month][day] : [];
+}
 
-    function showHoraires(day) {
-      selectedDay = day;
-      const horaireDiv = document.getElementById('horaire-admin');
-      const titleDiv = horaireDiv.querySelector('.horaire-title');
-      const gridDiv = horaireDiv.querySelector('.horaire-grid');
-      
-      titleDiv.textContent = `📅 Horaires pour le ${day} ${monthNames[selectedMonth]} ${selectedYear}`;
-      gridDiv.innerHTML = '';
-      
-      const activeHoraires = getActiveHoraires(selectedYear, selectedMonth, day);
-      horaires.forEach(h => {
-        const btn = document.createElement('button');
-        btn.textContent = h;
-        btn.className = 'horaire-btn ' + (activeHoraires.includes(h) ? 'active' : 'inactive');
-        btn.onclick = () => toggleHoraire(day, h);
-        gridDiv.appendChild(btn);
-      });
-      
-      horaireDiv.style.display = 'block';
-      
-      // Mise à jour de la sélection visuelle
-      document.querySelectorAll('.day-admin').forEach(d => {
-        d.classList.remove('selected');
-        d.classList.remove('next-highlighted');
-      });
-      
-      // Encadrer en rose la case sélectionnée
-      const firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
-      const startDay = firstDay === 0 ? 6 : firstDay - 1;
-      const currentDayIndex = startDay + day - 1;
-      const selectedDayElement = document.querySelectorAll('.day-admin')[currentDayIndex];
-      if (selectedDayElement) {
-        selectedDayElement.classList.add('selected');
-        selectedDayElement.classList.add('next-highlighted');
-      }
-    }
+function renderAdminCalendar(){
+  const grid=document.getElementById('calendar-admin-grid');
+  grid.innerHTML='';
+  document.getElementById('horaire-admin').style.display='none';
+  selectedDay=null;
+  const daysInMonth = new Date(selectedYear, selectedMonth+1,0).getDate();
+  const firstDay = new Date(selectedYear,selectedMonth,1).getDay();
+  const startDay = firstDay===0?6:firstDay-1;
+  for(let i=0;i<startDay;i++) grid.appendChild(document.createElement('div'));
+  for(let day=1;day<=daysInMonth;day++){
+    const activeHoraires = getActiveHoraires(selectedYear,selectedMonth,day);
+    const dayDiv=document.createElement('div');
+    dayDiv.textContent=day;
+    dayDiv.className='day-admin '+(activeHoraires.length?'available':'unavailable');
+    dayDiv.onclick=()=>showHoraires(day);
+    grid.appendChild(dayDiv);
+  }
+}
 
-    function toggleHoraire(day, horaire) {
-      if(!availability[selectedYear]) availability[selectedYear] = {};
-      if(!availability[selectedYear][selectedMonth]) availability[selectedYear][selectedMonth] = {};
-      if(!availability[selectedYear][selectedMonth][day]) availability[selectedYear][selectedMonth][day] = [];
-      const arr = availability[selectedYear][selectedMonth][day];
-      if(arr.includes(horaire)) {
-        availability[selectedYear][selectedMonth][day] = arr.filter(h => h !== horaire);
-      } else {
-        arr.push(horaire);
-      }
-      
-      // Mise à jour uniquement des boutons horaires sans fermer le menu
-      updateHoraireButtons(day);
-      
-      // Mise à jour uniquement de l'apparence du jour dans le calendrier
-      updateDayAppearance(day);
-    }
-    
-    function updateHoraireButtons(day) {
-      const gridDiv = document.querySelector('#horaire-admin .horaire-grid');
-      const activeHoraires = getActiveHoraires(selectedYear, selectedMonth, day);
-      
-      const buttons = gridDiv.querySelectorAll('.horaire-btn');
-      buttons.forEach(btn => {
-        const horaire = btn.textContent;
-        btn.className = 'horaire-btn ' + (activeHoraires.includes(horaire) ? 'active' : 'inactive');
-      });
-    }
-    
-    function updateDayAppearance(day) {
-      const activeHoraires = getActiveHoraires(selectedYear, selectedMonth, day);
-      const firstDay = new Date(selectedYear, selectedMonth, 1).getDay();
-      const startDay = firstDay === 0 ? 6 : firstDay - 1;
-      const dayIndex = startDay + day - 1;
-      
-      const dayDiv = document.querySelectorAll('.day-admin')[dayIndex];
-      if (dayDiv) {
-        dayDiv.className = 'day-admin selected next-highlighted ' + (activeHoraires.length ? 'available' : 'unavailable');
-      }
-    }
+function showHoraires(day){
+  selectedDay=day;
+  const horaireDiv=document.getElementById('horaire-admin');
+  const titleDiv=horaireDiv.querySelector('.horaire-title');
+  const gridDiv=horaireDiv.querySelector('.horaire-grid');
+  titleDiv.textContent=`📅 Horaires pour le ${day} ${monthNames[selectedMonth]} ${selectedYear}`;
+  gridDiv.innerHTML='';
+  const activeHoraires=getActiveHoraires(selectedYear,selectedMonth,day);
+  horaires.forEach(h=>{
+    const btn=document.createElement('button');
+    btn.textContent=h;
+    btn.className='horaire-btn '+(activeHoraires.includes(h)?'active':'inactive');
+    btn.onclick=()=>toggleHoraire(day,h);
+    gridDiv.appendChild(btn);
+  });
+  horaireDiv.style.display='block';
+}
 
-    function saveAvailability() {
-      localStorage.setItem('availability', JSON.stringify(availability));
-      
-      // Animation de succès
-      const btn = document.querySelector('.save-btn');
-      const originalText = btn.textContent;
-      btn.textContent = '✅ Sauvegardé !';
-      btn.style.background = 'linear-gradient(135deg, #25D366, #20c358)';
-      
-      setTimeout(() => {
-        btn.textContent = originalText;
-        btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
-      }, 2000);
-    }
+function toggleHoraire(day,horaire){
+  if(!availability[selectedYear]) availability[selectedYear]={};
+  if(!availability[selectedYear][selectedMonth]) availability[selectedYear][selectedMonth]={};
+  if(!availability[selectedYear][selectedMonth][day]) availability[selectedYear][selectedMonth][day]=[];
+  const arr = availability[selectedYear][selectedMonth][day];
+  if(arr.includes(horaire)) availability[selectedYear][selectedMonth][day]=arr.filter(h=>h!==horaire);
+  else arr.push(horaire);
+  showHoraires(day);
+}
 
-    fillSelectors();
-    renderAdminCalendar();
-  </script>
+async function saveAvailability(){
+  await fetch('http://localhost:3000/availability',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(availability)
+  });
+  const btn=document.querySelector('.save-btn');
+  const original=btn.textContent;
+  btn.textContent='✅ Sauvegardé !';
+  setTimeout(()=>btn.textContent=original,2000);
+}
+
+fillSelectors();
+fetchAvailability();
+</script>
   
   <script>
     window.addEventListener('scroll', function() {

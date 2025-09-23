@@ -257,17 +257,19 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
     addMarker(38.6969, -9.4215, "<b>Cascais</b>");
     addMarker(38.8029, -9.3817, "<b>Sintra</b>");
 
-    // Polygone élargi pour englober Barreiro et Seixal
+    // Polygone élargi pour englober l'aéroport, Barreiro et Seixal
     var zoneCoords = [
       [38.85, -9.50],  // Nord-Ouest de Sintra
       [38.82, -9.38],  // Sintra
-      [38.75, -9.28],  // Lisbonne Nord
-      [38.70, -9.05],  // Lisbonne Est
+      [38.80, -9.10],  // Nord de l'aéroport
+      [38.78, -9.08],  // Est de l'aéroport
+      [38.75, -9.05],  // Lisbonne Nord-Est
+      [38.70, -9.02],  // Lisbonne Est
       [38.65, -9.02],  // Barreiro Est
       [38.62, -9.07],  // Barreiro Sud
       [38.60, -9.15],  // Seixal Est
-      [38.63, -9.30],  // Seixal Ouest
-      [38.70, -9.42],  // Vers Cascais
+      [38.63, -9.32],  // Seixal Ouest
+      [38.70, -9.45],  // Vers Cascais
       [38.80, -9.48]   // Nord de Cascais
     ];
 
@@ -278,7 +280,7 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
       fillOpacity: 0.25
     }).addTo(map);
 
-    polygon.bindPopup("Zone de service : Lisbonne, Seixal, Barreiro, Cascais et Sintra");
+    polygon.bindPopup("Zone de service : Lisbonne (incluant l'aéroport), Seixal, Barreiro, Cascais et Sintra");
   </script>
 
 
