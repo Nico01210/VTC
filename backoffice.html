@@ -133,7 +133,7 @@
 
   <div class="header">
     <h1>🚗 VTC Premium</h1>
-    <p>Backoffice - Gestion des disponibilités</p>
+    <h2>Backoffice - Gestion des disponibilités</h2>
   </div>
 
   <div class="calendar-admin">
@@ -164,7 +164,7 @@
 
   <script>
     // --- CONFIG ---
-    const API_URL = 'https://vtc-l3c5.onrender.com'; // <-- remplacer par ton URL Render
+    const API_URL = 'https://vtc-l3c5.onrender.com'; // <-- Votre backend Render
     const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
     const horaires = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
     const currentYear = new Date().getFullYear();
@@ -174,21 +174,121 @@
     let availability = {};
 
     async function fetchAvailability(){
-      const res = await fetch(`${API_URL}/availability`);
-      availability = await res.json();
-      renderAdminCalendar();
+      try {
+        console.log('🔄 Chargement des disponibilités depuis:', API_URL);
+        const response = await fetch(`${API_URL}/availability`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        availability = await response.json();
+        console.log('✅ Disponibilités chargées:', availability);
+        renderAdminCalendar();
+        
+      } catch (error) {
+        console.error('❌ Erreur lors du chargement des disponibilités:', error);
+        
+        // Afficher une notification d'erreur à l'utilisateur
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+          position: fixed; top: 20px; right: 20px; z-index: 1000;
+          background: linear-gradient(135deg, #dc3545, #c82333);
+          color: white; padding: 15px 20px; border-radius: 12px;
+          box-shadow: 0 6px 20px rgba(220,53,69,0.4);
+          font-weight: 600; max-width: 400px;
+        `;
+        errorDiv.innerHTML = `
+          <div>❌ Erreur de connexion au serveur</div>
+          <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.9;">
+            ${error.message || 'Vérifiez votre URL API'}
+          </div>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => errorDiv.remove(), 5000);
+        
+        // Initialiser avec des données vides
+        availability = {};
+        renderAdminCalendar();
+      }
     }
 
     async function saveAvailability(){
-      await fetch(`${API_URL}/availability`,{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(availability)
-      });
-      const btn=document.querySelector('.save-btn');
-      const original=btn.textContent;
-      btn.textContent='✅ Sauvegardé !';
-      setTimeout(()=>btn.textContent=original,2000);
+      const btn = document.querySelector('.save-btn');
+      const original = btn.textContent;
+      
+      try {
+        console.log('💾 Sauvegarde des disponibilités vers:', API_URL);
+        console.log('📤 Données à envoyer:', availability);
+        
+        btn.textContent = '⏳ Sauvegarde...';
+        btn.disabled = true;
+        
+        const response = await fetch(`${API_URL}/availability`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(availability)
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        console.log('✅ Sauvegarde réussie:', result);
+        
+        btn.textContent = '✅ Sauvegardé !';
+        btn.style.background = 'linear-gradient(135deg, #25D366, #20c358)';
+        
+        setTimeout(() => {
+          btn.textContent = original;
+          btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
+          btn.disabled = false;
+        }, 2000);
+        
+        // Rafraîchir le calendrier pour afficher les changements
+        renderAdminCalendar();
+        
+      } catch (error) {
+        console.error('❌ Erreur lors de la sauvegarde:', error);
+        
+        btn.textContent = '❌ Erreur de sauvegarde';
+        btn.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
+        btn.disabled = false;
+        
+        // Afficher une notification d'erreur détaillée
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+          position: fixed; top: 20px; right: 20px; z-index: 1000;
+          background: linear-gradient(135deg, #dc3545, #c82333);
+          color: white; padding: 15px 20px; border-radius: 12px;
+          box-shadow: 0 6px 20px rgba(220,53,69,0.4);
+          font-weight: 600; max-width: 400px;
+        `;
+        errorDiv.innerHTML = `
+          <div>❌ Échec de la sauvegarde</div>
+          <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.9;">
+            ${error.message || 'Vérifiez votre connexion et l\'URL API'}
+          </div>
+        `;
+        document.body.appendChild(errorDiv);
+        
+        setTimeout(() => {
+          errorDiv.remove();
+          btn.textContent = original;
+          btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
+        }, 5000);
+      }
     }
 
     function fillSelectors(){
