@@ -243,91 +243,107 @@
       const btn = document.querySelector('.save-btn');
       const original = btn.textContent;
       
-      try {
-        console.log('💾 Sauvegarde des disponibilités vers:', API_URL);
-        console.log('📤 Données à envoyer:', availability);
-        
-        btn.textContent = '⏳ Sauvegarde...';
-        btn.disabled = true;
-        
-        const response = await fetch(`${API_URL}/availability`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-            'Access-Control-Allow-Headers': 'Content-Type'
-          },
-          mode: 'cors',
-          body: JSON.stringify(availability)
-        });
-        
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-        }
-        
-        const result = await response.json();
-        console.log('✅ Sauvegarde réussie:', result);
-        
-        btn.textContent = '✅ Sauvegardé !';
-        btn.style.background = 'linear-gradient(135deg, #25D366, #20c358)';
-        
-        setTimeout(() => {
-          btn.textContent = original;
-          btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
-          btn.disabled = false;
-        }, 2000);
-        
-        // Rafraîchir le calendrier pour afficher les changements
-        renderAdminCalendar();
-        
-      } catch (error) {
-        console.error('❌ Erreur lors de la sauvegarde:', error);
-        
-        btn.textContent = '❌ Erreur de sauvegarde';
-        btn.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
-        btn.disabled = false;
-        
-        // Diagnostic spécifique pour "Failed to fetch"
-        let errorMessage = error.message;
-        if (error.message === 'Failed to fetch') {
-          errorMessage = 'Problème de CORS ou serveur inaccessible. Vérifiez que votre backend autorise les requêtes CORS.';
+      async function attemptSave(retryCount = 0) {
+        try {
+          console.log(`💾 Tentative ${retryCount + 1} - Sauvegarde des disponibilités vers:`, API_URL);
+          console.log('📤 Données à envoyer:', availability);
           
-          // Test de connectivité
-          console.log('🔍 Test de connectivité lors de la sauvegarde...');
-          try {
-            const testResponse = await fetch(API_URL, { mode: 'no-cors' });
-            console.log('ℹ️ Le serveur répond mais refuse les requêtes CORS');
-          } catch (testError) {
-            console.log('❌ Serveur complètement inaccessible');
-            errorMessage = 'Serveur inaccessible. Vérifiez que votre backend Render est démarré.';
+          if (retryCount === 0) {
+            btn.textContent = '⏳ Sauvegarde...';
+          } else {
+            btn.textContent = `⏳ Réveil du serveur... (${retryCount}/3)`;
           }
+          btn.disabled = true;
+          
+          const response = await fetch(`${API_URL}/availability`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+              'Access-Control-Allow-Headers': 'Content-Type'
+            },
+            mode: 'cors',
+            body: JSON.stringify(availability)
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+          
+          const result = await response.json();
+          console.log('✅ Sauvegarde réussie:', result);
+          
+          btn.textContent = '✅ Sauvegardé !';
+          btn.style.background = 'linear-gradient(135deg, #25D366, #20c358)';
+          
+          setTimeout(() => {
+            btn.textContent = original;
+            btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
+            btn.disabled = false;
+          }, 2000);
+          
+          // Rafraîchir le calendrier pour afficher les changements
+          renderAdminCalendar();
+          
+        } catch (error) {
+          console.error(`❌ Erreur tentative ${retryCount + 1}:`, error);
+          
+          // Si c'est un Failed to fetch et qu'on a encore des tentatives
+          if (error.message === 'Failed to fetch' && retryCount < 3) {
+            console.log(`🔄 Nouvelle tentative dans 3 secondes... (${retryCount + 1}/3)`);
+            setTimeout(() => attemptSave(retryCount + 1), 3000);
+            return;
+          }
+          
+          // Échec définitif
+          btn.textContent = '❌ Erreur de sauvegarde';
+          btn.style.background = 'linear-gradient(135deg, #dc3545, #c82333)';
+          btn.disabled = false;
+          
+          // Diagnostic spécifique pour "Failed to fetch"
+          let errorMessage = error.message;
+          if (error.message === 'Failed to fetch') {
+            errorMessage = 'Serveur inaccessible après 3 tentatives. Vérifiez que votre backend Render est démarré et les endpoints /availability existent.';
+            
+            // Test de connectivité
+            console.log('🔍 Test de connectivité finale...');
+            try {
+              const testResponse = await fetch(API_URL, { mode: 'no-cors' });
+              console.log('ℹ️ Le serveur répond mais refuse les requêtes CORS ou les endpoints sont incorrects');
+            } catch (testError) {
+              console.log('❌ Serveur complètement inaccessible');
+            }
+          }
+          
+          // Afficher une notification d'erreur détaillée
+          const errorDiv = document.createElement('div');
+          errorDiv.style.cssText = `
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white; padding: 15px 20px; border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(220,53,69,0.4);
+            font-weight: 600; max-width: 450px;
+          `;
+          errorDiv.innerHTML = `
+            <div>❌ Échec de la sauvegarde</div>
+            <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.9;">
+              ${errorMessage}
+            </div>
+          `;
+          document.body.appendChild(errorDiv);
+          
+          setTimeout(() => {
+            errorDiv.remove();
+            btn.textContent = original;
+            btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
+          }, 7000);
         }
-        
-        // Afficher une notification d'erreur détaillée
-        const errorDiv = document.createElement('div');
-        errorDiv.style.cssText = `
-          position: fixed; top: 20px; right: 20px; z-index: 1000;
-          background: linear-gradient(135deg, #dc3545, #c82333);
-          color: white; padding: 15px 20px; border-radius: 12px;
-          box-shadow: 0 6px 20px rgba(220,53,69,0.4);
-          font-weight: 600; max-width: 450px;
-        `;
-        errorDiv.innerHTML = `
-          <div>❌ Échec de la sauvegarde</div>
-          <div style="font-size: 0.9em; margin-top: 5px; opacity: 0.9;">
-            ${errorMessage}
-          </div>
-        `;
-        document.body.appendChild(errorDiv);
-        
-        setTimeout(() => {
-          errorDiv.remove();
-          btn.textContent = original;
-          btn.style.background = 'linear-gradient(135deg, #FFB6A3, #ff9f85)';
-        }, 7000);
       }
+      
+      // Démarrer la première tentative
+      attemptSave();
     }
 
     function fillSelectors(){
