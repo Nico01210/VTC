@@ -1391,3 +1391,8 @@ h1 {
     font-size: 40px;
   }
 }
+
+/* Force un espace sous la navbar fixe sur tous les titres et blocs principaux */
+.header, h1, .login-container, .calendar-admin, .services-section {
+    margin-top: 100px !important;
+}

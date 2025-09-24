@@ -14,7 +14,6 @@
     }
     h1 {
       text-align: center;
-      margin: 20px 0;
     }
     h2 {
         color: white;
@@ -148,9 +147,13 @@
 
     <!--- NAVBAR -->
 
-  <nav class="navbar">
+<nav class="navbar">
         <div class="navbar-container">
-            <div class="navbar-brand">VTC Premium</div>
+            <div class="navbar-brand">
+                <a href="/index.html">
+                    <img src="images/logo-transparent-png.png" alt="Steph VTC" class="logo" style="height:120px;width: 200px;">
+                </a>
+                </div>
             <ul class="navbar-menu">
                 <li><a href="/index.html" class="navbar-link">Accueil</a></li>
                  <li><a href="/apropos.html" class="navbar-link">À propos</a></li>
@@ -162,6 +165,7 @@
             <div class="navbar-spacer"></div>
         </div>
     </nav>
+    
 <h1>Nos Services</h1>
 
 <section class="services">
@@ -290,8 +294,7 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
     <footer class="footer">
         <div class="footer-container">
             <div class="footer-logo">
-                <h2>VTC Premium</h2>
-
+                <img src="/images/logo-transparent-png.png" alt="Steph VTC" style="height:120px; width: 200px;">
             </div>
             
             <div class="footer-contact">
@@ -315,6 +318,7 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
             <p>Copyright 2025 Nicolas VTC. Tous droits réservés.</p>
         </div>
     </footer>
+
 <script>
   window.addEventListener('scroll', function() {
     const navbar = document.querySelector('.navbar');
