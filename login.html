@@ -187,19 +187,9 @@
             
             <div class="error-message" id="errorMessage"></div>
         </form>
-
-        <div class="credentials-info">
-            <strong>Identifiants de test :</strong><br>
-            Utilisateur : <strong>admin</strong><br>
-            Mot de passe : <strong>VTC2025Admin!</strong>
-        </div>
     </div>
     <script>
-        // Configuration des identifiants
-        const VALID_CREDENTIALS = {
-            'steph': 'Copacabana003',
-            'admin': 'VTC2025Admin!'
-        };
+        const API_URL = 'https://vtc-l3c5.onrender.com';
 
         // Vérifier si déjà connecté
         if (sessionStorage.getItem('vtcBackofficeAuth') === 'true') {
@@ -208,7 +198,7 @@
         }
 
         // Formulaire de connexion
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const username = document.getElementById('username').value;
@@ -220,12 +210,23 @@
             loginBtn.disabled = true;
             loginBtn.textContent = '🔄 Vérification...';
             
-            // Simuler un délai de vérification pour l'UX
-            setTimeout(() => {
-                if (VALID_CREDENTIALS[username] && VALID_CREDENTIALS[username] === password) {
+            try {
+                // Appel API sécurisé pour valider les credentials
+                const response = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
                     // Connexion réussie
                     sessionStorage.setItem('vtcBackofficeAuth', 'true');
                     sessionStorage.setItem('vtcBackofficeUser', username);
+                    sessionStorage.setItem('vtcAuthToken', result.token);
                     sessionStorage.setItem('vtcLoginTime', new Date().getTime().toString());
                     
                     loginBtn.textContent = '✅ Connexion réussie';
@@ -247,7 +248,20 @@
                         errorMessage.style.display = 'none';
                     }, 5000);
                 }
-            }, 1500);
+            } catch (error) {
+                console.error('Erreur de connexion:', error);
+                
+                // Afficher une erreur de connexion
+                errorMessage.textContent = '❌ Erreur de connexion au serveur. Vérifiez votre connexion.';
+                errorMessage.style.display = 'block';
+                
+                loginBtn.disabled = false;
+                loginBtn.textContent = '🔐 Se connecter';
+                
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 5000);
+            }
         });
 
         // Vérification de l'expiration de session (24h)

@@ -222,6 +222,21 @@
     // --- CONFIG ---
     const API_URL = 'https://vtc-l3c5.onrender.com'; // <-- Votre backend Render
     const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+    
+    // Fonction pour récupérer le token JWT
+    function getAuthToken() {
+      return sessionStorage.getItem('vtcAuthToken');
+    }
+    
+    // Fonction pour créer les headers avec authentification
+    function getAuthHeaders() {
+      const token = getAuthToken();
+      return {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` })
+      };
+    }
     const horaires = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00'];
     const currentYear = new Date().getFullYear();
     let selectedMonth = new Date().getMonth();
@@ -238,10 +253,7 @@
         
         const response = await fetch(`${API_URL}/availability`, {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
+          headers: getAuthHeaders(),
           mode: 'cors' // Explicitement spécifier le mode CORS
         });
         
@@ -310,20 +322,12 @@
           }
           btn.disabled = true;
           
-          const response = await fetch(`${API_URL}/availability`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-              'Access-Control-Allow-Headers': 'Content-Type'
-            },
-            mode: 'cors',
-            body: JSON.stringify(availability)
-          });
-          
-          if (!response.ok) {
+                const response = await fetch(`${API_URL}/availability`, {
+                  method: 'POST',
+                  headers: getAuthHeaders(),
+                  mode: 'cors',
+                  body: JSON.stringify(availability)
+                });          if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
           }
           
