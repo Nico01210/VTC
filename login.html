@@ -123,19 +123,6 @@
             display: none;
         }
 
-        .credentials-info {
-            margin-top: 20px;
-            padding: 15px;
-            background: rgba(66, 153, 225, 0.1);
-            border-radius: 12px;
-            font-size: 0.9rem;
-            color: #2d3748;
-        }
-
-        .credentials-info strong {
-            color: #3182ce;
-        }
-
         /* Style spécifique pour la navbar sur la page login */
         .login-page .navbar {
             position: absolute;
@@ -175,93 +162,42 @@
                 <label for="username">Nom d'utilisateur</label>
                 <input type="text" id="username" class="form-input" required>
             </div>
-            
             <div class="form-group">
                 <label for="password">Mot de passe</label>
                 <input type="password" id="password" class="form-input" required>
             </div>
-            
             <button type="submit" class="login-btn" id="loginBtn">
                 🔐 Se connecter
             </button>
-            
             <div class="error-message" id="errorMessage"></div>
         </form>
     </div>
     <script>
-        const API_URL = 'https://vtc-l3c5.onrender.com';
-
         // Vérifier si déjà connecté
         if (sessionStorage.getItem('vtcBackofficeAuth') === 'true') {
-            console.log('Utilisateur déjà connecté, redirection vers backoffice');
             window.location.replace('/backoffice.html');
         }
 
-        // Formulaire de connexion
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        // Formulaire de connexion : valide la session sans vérifier le mot de passe
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
             const loginBtn = document.getElementById('loginBtn');
-            
-            // Désactiver le bouton pendant la vérification
             loginBtn.disabled = true;
-            loginBtn.textContent = '🔄 Vérification...';
+            loginBtn.textContent = '🔄 Connexion...';
             
-            try {
-                // Appel API sécurisé pour valider les credentials
-                const response = await fetch(`${API_URL}/auth/login`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ username, password })
-                });
+            setTimeout(() => {
+                sessionStorage.setItem('vtcBackofficeAuth', 'true');
+                sessionStorage.setItem('vtcBackofficeUser', document.getElementById('username').value);
+                sessionStorage.setItem('vtcLoginTime', new Date().getTime().toString());
                 
-                const result = await response.json();
-                
-                if (response.ok && result.success) {
-                    // Connexion réussie
-                    sessionStorage.setItem('vtcBackofficeAuth', 'true');
-                    sessionStorage.setItem('vtcBackofficeUser', username);
-                    sessionStorage.setItem('vtcAuthToken', result.token);
-                    sessionStorage.setItem('vtcLoginTime', new Date().getTime().toString());
-                    
-                    loginBtn.textContent = '✅ Connexion réussie';
-                    loginBtn.style.background = 'linear-gradient(135deg, #25D366, #20c358)';
-                    
-                    setTimeout(() => {
-                        window.location.replace('/backoffice.html');
-                    }, 1000);
-                } else {
-                    // Échec de la connexion
-                    errorMessage.textContent = '❌ Nom d\'utilisateur ou mot de passe incorrect';
-                    errorMessage.style.display = 'block';
-                    
-                    loginBtn.disabled = false;
-                    loginBtn.textContent = '🔐 Se connecter';
-                    
-                    // Effacer le message d'erreur après 5 secondes
-                    setTimeout(() => {
-                        errorMessage.style.display = 'none';
-                    }, 5000);
-                }
-            } catch (error) {
-                console.error('Erreur de connexion:', error);
-                
-                // Afficher une erreur de connexion
-                errorMessage.textContent = '❌ Erreur de connexion au serveur. Vérifiez votre connexion.';
-                errorMessage.style.display = 'block';
-                
-                loginBtn.disabled = false;
-                loginBtn.textContent = '🔐 Se connecter';
+                loginBtn.textContent = '✅ Connexion réussie';
+                loginBtn.style.background = 'linear-gradient(135deg, #25D366, #20c358)';
                 
                 setTimeout(() => {
-                    errorMessage.style.display = 'none';
-                }, 5000);
-            }
+                    window.location.replace('/backoffice.html');
+                }, 1000);
+            }, 1000);
         });
 
         // Vérification de l'expiration de session (24h)
