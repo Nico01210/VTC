@@ -1582,6 +1582,141 @@ h1 {
 }
 
 /* ========================================
+   CALENDRIER RESPONSIVE - PAGE RÉSERVATION
+   ======================================== */
+
+.calendar-container {
+  display: inline-block;
+  background: rgba(255,255,255,0.95);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  max-width: 90vw;
+  width: 500px;
+}
+
+.calendar-header {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calendar-nav-btn {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.calendar-month-year {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+  font-size: 16px;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 12px;
+  text-align: center;
+}
+
+/* Responsive tablette */
+@media (max-width: 1024px) {
+  .calendar-container {
+    width: 90%;
+    max-width: 450px;
+    padding: 30px;
+  }
+
+  .calendar-month-year {
+    font-size: 20px;
+  }
+
+  .calendar-weekdays {
+    font-size: 14px;
+  }
+
+  .calendar-nav-btn {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .calendar-days {
+    gap: 10px;
+  }
+}
+
+/* Responsive mobile */
+@media (max-width: 600px) {
+  .calendar-container {
+    width: 95%;
+    max-width: 350px;
+    padding: 20px;
+  }
+
+  .calendar-header {
+    margin-bottom: 20px;
+  }
+
+  .calendar-month-year {
+    font-size: 18px;
+  }
+
+  .calendar-weekdays {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+
+  .calendar-nav-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .calendar-days {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 400px) {
+  .calendar-container {
+    padding: 15px;
+    max-width: 300px;
+  }
+
+  .calendar-month-year {
+    font-size: 16px;
+  }
+
+  .calendar-weekdays {
+    font-size: 11px;
+  }
+
+  .calendar-nav-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .calendar-days {
+    gap: 4px;
+  }
+}
+
+/* ========================================
    MEDIA QUERY: PAGE "NOS SERVICES"
    Empiler les 3 cartes en colonne sur mobiles et tablettes
    ======================================== */
