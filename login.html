@@ -13,6 +13,10 @@
             background-position: center;
             background-repeat: no-repeat;
             background-attachment: fixed;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
             height: 100vh;
             overflow: hidden;
             display: flex;
@@ -134,6 +138,10 @@
 
         /* Responsive pour tablettes */
         @media (max-width: 1024px) {
+            body {
+                background-attachment: scroll;
+            }
+
             .login-container {
                 max-width: 360px;
                 padding: 32px;
@@ -152,6 +160,8 @@
         @media (max-width: 600px) {
             body {
                 padding: 15px;
+                background-attachment: scroll;
+                image-rendering: auto;
             }
 
             .login-container {

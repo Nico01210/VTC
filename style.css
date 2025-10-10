@@ -19,6 +19,10 @@ p {
 	background-attachment: fixed;
 	image-rendering: -webkit-optimize-contrast;
 	image-rendering: crisp-edges;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 	margin-top: 0;
 	display: flex;
 	justify-content: center;
@@ -36,6 +40,10 @@ body:not(.home-page) {
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-attachment: fixed;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
 }
 @keyframes carEntrance {
 	from {
@@ -1429,8 +1437,7 @@ h1 {
 
 @media (max-width: 600px) {
     .logo {
-        height: 100px;
-		width: 150px;
+        display: none;
     }
 }
 
@@ -1974,5 +1981,26 @@ h1 {
   .submit-btn {
     font-size: 16px;
     padding: 12px 25px;
+  }
+}
+
+/* Optimisation de l'image de fond pour mobile */
+@media (max-width: 1024px) {
+  .background-container,
+  body:not(.home-page) {
+    background-attachment: scroll;
+    background-size: cover;
+    background-position: center center;
+  }
+}
+
+@media (max-width: 600px) {
+  .background-container,
+  body:not(.home-page) {
+    background-attachment: scroll;
+    background-size: cover;
+    background-position: center center;
+    image-rendering: auto;
+    -webkit-background-size: cover;
   }
 }
