@@ -64,8 +64,12 @@
     .day-header { padding: 12px 0; text-align: center; font-weight: 600; color: #4a5568; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
     .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; margin-bottom: 30px; }
     .day-admin { 
-      padding: 24px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; font-size: 1.2rem;
-      transition: all 0.3s ease; position: relative; min-height: 80px; min-width: 80px; width: 80px; height: 80px; display: flex; align-items: center; justify-content: center;
+      padding: 10px 0; border-radius: 12px; text-align: center; cursor: pointer; font-weight: 600; font-size: 1.2rem;
+      transition: all 0.3s ease; position: relative; 
+      width: 100%; 
+      max-width: 80px;
+      aspect-ratio: 1;
+      display: flex; align-items: center; justify-content: center;
     }
     .day-admin:hover { transform: scale(1.05); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
     .day-admin.available { background: linear-gradient(135deg, #25D366, #20c358); color: #fff; box-shadow: 0 4px 15px rgba(37,211,102,0.3); }
@@ -140,6 +144,194 @@
       .controls { flex-direction: column; align-items: center; }
       .month-select { width: 100%; max-width: 200px; }
       .horaire-grid { grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 8px; }
+    }
+
+    /* Responsive pour tablettes */
+    @media (max-width: 1024px) {
+      .calendar-admin {
+        max-width: 90%;
+        padding: 35px 30px;
+        margin: 100px auto 0 auto;
+      }
+
+      .day-admin {
+        max-width: 70px;
+        font-size: 1.1rem;
+        padding: 8px 0;
+      }
+
+      .calendar-grid {
+        gap: 10px;
+      }
+
+      .calendar-header {
+        gap: 10px;
+      }
+
+      .horaire-section {
+        padding: 20px;
+      }
+
+      .horaire-title {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* Responsive pour mobiles */
+    @media (max-width: 600px) {
+      .calendar-admin {
+        max-width: 95%;
+        padding: 20px 12px;
+        margin: 80px auto 0 auto;
+        border-radius: 20px;
+      }
+
+      .header {
+        margin-top: 80px;
+      }
+
+      .header h1 {
+        font-size: 28px;
+        margin-bottom: 15px;
+      }
+
+      .header h2 {
+        font-size: 24px;
+        margin-bottom: 30px;
+      }
+
+      .controls {
+        gap: 10px;
+      }
+
+      .month-select {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-width: 120px;
+      }
+
+      .day-header {
+        font-size: 0.7rem;
+        padding: 6px 0;
+      }
+
+      .calendar-header {
+        gap: 4px;
+        margin-bottom: 10px;
+      }
+
+      .calendar-grid {
+        gap: 4px;
+      }
+
+      .day-admin {
+        max-width: none;
+        font-size: 0.85rem;
+        padding: 6px 0;
+        border-radius: 8px;
+      }
+
+      .horaire-section {
+        padding: 18px 15px;
+        border-radius: 12px;
+      }
+
+      .horaire-title {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+      }
+
+      .horaire-grid {
+        grid-template-columns: repeat(auto-fit, minmax(65px, 1fr));
+        gap: 8px;
+      }
+
+      .horaire-btn {
+        padding: 10px 6px;
+        font-size: 12px;
+      }
+
+      .save-btn {
+        padding: 14px 24px;
+        font-size: 16px;
+        margin-top: 20px;
+      }
+
+      button[onclick="logout()"] {
+        padding: 8px 16px;
+        font-size: 13px;
+      }
+    }
+
+    /* Responsive pour petits mobiles */
+    @media (max-width: 400px) {
+      .calendar-admin {
+        padding: 18px 10px;
+        max-width: 98%;
+      }
+
+      .header {
+        margin-top: 70px;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        margin-bottom: 12px;
+      }
+
+      .header h2 {
+        font-size: 20px;
+        margin-bottom: 25px;
+      }
+
+      .month-select {
+        font-size: 13px;
+        padding: 9px 14px;
+      }
+
+      .day-header {
+        font-size: 0.65rem;
+        padding: 4px 0;
+      }
+
+      .calendar-header {
+        gap: 3px;
+        margin-bottom: 8px;
+      }
+
+      .calendar-grid {
+        gap: 3px;
+      }
+
+      .day-admin {
+        max-width: none;
+        font-size: 0.75rem;
+        padding: 4px 0;
+        border-radius: 6px;
+      }
+
+      .horaire-section {
+        padding: 15px 12px;
+      }
+
+      .horaire-title {
+        font-size: 1rem;
+      }
+
+      .horaire-grid {
+        grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+        gap: 6px;
+      }
+
+      .horaire-btn {
+        padding: 9px 5px;
+        font-size: 11px;
+      }
+
+      .save-btn {
+        padding: 12px 20px;
+        font-size: 15px;
+      }
     }
   </style>
 
