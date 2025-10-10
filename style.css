@@ -1,5 +1,5 @@
 body, html {
-	height: 100%;
+	min-height: 100%;
 	margin: 0;
 	padding: 0;
 	font-family: 'Arial', sans-serif;
@@ -1986,21 +1986,39 @@ h1 {
 
 /* Optimisation de l'image de fond pour mobile */
 @media (max-width: 1024px) {
-  .background-container,
+  .background-container {
+    background-attachment: scroll;
+    background-size: cover;
+    background-position: top center;
+    min-height: 100vh;
+  }
+  
   body:not(.home-page) {
     background-attachment: scroll;
     background-size: cover;
-    background-position: center center;
+    background-position: top center;
+    min-height: 100vh;
+    height: auto;
   }
 }
 
 @media (max-width: 600px) {
-  .background-container,
+  .background-container {
+    background-attachment: scroll;
+    background-size: cover;
+    background-position: top center;
+    image-rendering: auto;
+    -webkit-background-size: cover;
+    min-height: 100vh;
+  }
+  
   body:not(.home-page) {
     background-attachment: scroll;
     background-size: cover;
-    background-position: center center;
+    background-position: top center;
     image-rendering: auto;
     -webkit-background-size: cover;
+    min-height: 100vh;
+    height: auto;
   }
 }
