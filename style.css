@@ -927,7 +927,7 @@ h1 {
     color: #FFB6A3;
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     margin: 0 20px;
@@ -1043,12 +1043,26 @@ h1 {
   margin-top: 70px;
 }
 
-/* Responsive pour mobile - masquer les flèches sur petit écran */
-@media (max-width: 768px) {
-  .step-arrow, .step-arrow-down {
+/* Responsive pour mobile - afficher les flèches verticales entre les steps */
+@media (max-width: 1024px) {
+  .step-arrow {
     display: none;
   }
   
+  .step-arrow-down {
+    display: flex;
+    font-size: 40px;
+    color: #FFB6A3;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    align-items: center;
+    justify-content: center;
+    margin: 10px auto;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
   .steps-row {
     flex-direction: column;
   }
@@ -1564,5 +1578,40 @@ h1 {
 @media (max-width: 600px) {
   .vehicle-card .vehicle-photo {
     max-height: 220px;
+  }
+}
+
+/* ========================================
+   MEDIA QUERY: PAGE "NOS SERVICES"
+   Empiler les 3 cartes en colonne sur mobiles et tablettes
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .services {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+    padding: 30px 20px !important;
+  }
+
+  .card {
+    max-width: 600px !important;
+    margin: 20px auto !important;
+    width: 100% !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .services {
+    padding: 20px 15px !important;
+    gap: 30px !important;
+  }
+
+  .card {
+    padding: 18px !important;
+    margin: 15px auto !important;
+  }
+
+  .card p {
+    font-size: 15px !important;
   }
 }
