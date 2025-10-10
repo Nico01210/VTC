@@ -131,6 +131,102 @@
             right: 0;
             z-index: 100;
         }
+
+        /* Responsive pour tablettes */
+        @media (max-width: 1024px) {
+            .login-container {
+                max-width: 360px;
+                padding: 32px;
+            }
+
+            .login-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .login-header p {
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Responsive pour mobiles */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .login-container {
+                max-width: 340px;
+                padding: 28px 24px;
+                border-radius: 20px;
+            }
+
+            .login-header {
+                margin-bottom: 25px;
+            }
+
+            .login-header h1 {
+                font-size: 1.6rem;
+                margin-bottom: 6px;
+            }
+
+            .login-header p {
+                font-size: 0.9rem;
+            }
+
+            .form-group {
+                margin-bottom: 18px;
+            }
+
+            .form-group label {
+                font-size: 0.85rem;
+                margin-bottom: 6px;
+            }
+
+            .form-input {
+                padding: 11px 14px;
+                font-size: 15px;
+            }
+
+            .login-btn {
+                padding: 13px 18px;
+                font-size: 15px;
+            }
+
+            .error-message {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Responsive pour petits mobiles */
+        @media (max-width: 400px) {
+            .login-container {
+                padding: 24px 20px;
+                border-radius: 18px;
+                max-width: 320px;
+            }
+
+            .login-header h1 {
+                font-size: 1.4rem;
+            }
+
+            .login-header p {
+                font-size: 0.85rem;
+            }
+
+            .form-group label {
+                font-size: 0.8rem;
+            }
+
+            .form-input {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            .login-btn {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body class="login-page">
@@ -221,5 +317,9 @@
             }
         }
     </script>
+
+    <!-- Menu Burger Script -->
+    <script src="burger-menu.js"></script>
+
 </body>
 </html>
