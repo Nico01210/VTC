@@ -1184,7 +1184,8 @@ h1 {
   /* Voiture overlay - réduire ou masquer sur mobile */
   .car-overlay {
     width: 300px;
-    opacity: 0.7;
+    opacity: 0;
+    animation: carEntrance 1s ease-in-out 1.5s forwards;
   }
   
   /* Services section */
