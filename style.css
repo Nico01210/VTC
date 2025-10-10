@@ -1517,9 +1517,52 @@ h1 {
     }
 }
 
+/* Sur mobiles/tablettes, garder la navbar transparente même quand scrolled */
+@media (max-width: 1024px) {
+  .navbar.scrolled {
+    background: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Assurer que la navbar ne couvre pas les titres sur mobile (déjà géré globalement) */
+  .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: transparent !important;
+  }
+}
+
 @keyframes slideIn {
     to {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Vehicle photo: desktop fixed-height with cover; on smaller screens keep aspect ratio to avoid cropping */
+.vehicle-card .vehicle-photo {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+  margin-bottom: 18px;
+}
+
+@media (max-width: 1024px) {
+  /* On tablet and mobile, let the image keep its aspect ratio (no cropping) and limit its max height */
+  .vehicle-card .vehicle-photo {
+    height: auto;
+    object-fit: contain;
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 600px) {
+  .vehicle-card .vehicle-photo {
+    max-height: 220px;
+  }
 }
