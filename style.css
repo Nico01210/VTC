@@ -145,60 +145,11 @@ body:not(.home-page) {
 	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 	transition: all 0.3s ease;
 }
-/*Navbar transparente pour la page index */
-.home-page .navbar {
+/* Navbar transparente pour toutes les pages */
+.navbar {
 	background: transparent;
 	backdrop-filter: none;
 	box-shadow: none;
-}
-
-/* Navbar transparente pour la page contact aussi */
-.contact-page .navbar {
-	background: transparent;
-	backdrop-filter: none;
-	box-shadow: none;
-}
-
-/* Navbar transparente pour la page avis aussi */
-.avis-page .navbar {
-	background: transparent;
-	backdrop-filter: none;
-	box-shadow: none;
-}
-/* Navbar transparente pour la page login */
-.login-page .navbar {
-	background: transparent;
-	backdrop-filter: none;
-	box-shadow: none;
-}
-/* Navbar transparente pour la page about */
-.about-page .navbar {
-	background: transparent;
-	backdrop-filter: none;
-	box-shadow: none;
-}
-
-/* Navbar transparente pour la page reservation */
-.reservation-page .navbar {
-	background: transparent;
-	backdrop-filter: none;
-	box-shadow: none;
-}
-/* Navbar transparente pour la page services */
-.services-page .navbar {
-	background: transparent;
-	backdrop-filter: none;
-	box-shadow: none;
-}
-*/* Navbar transparente pour la page backoffice */
-.backoffice-page .navbar {
-  background: transparent;
-  transition: background-color 0.3s ease;
-}
-
-.backoffice-page .navbar.scrolled {
-  background: rgba(46, 20, 37, 0.95);
-  backdrop-filter: blur(10px);
 }
 .navbar.scrolled {
 	background: rgba(0, 0, 0, 0.9);
@@ -1013,7 +964,7 @@ h1 {
 }
 
 .footer-bottom {
-	background: rgba(0, 0, 0, 0.95);
+	background: transparent;
 	text-align: center;
 	padding: 10px;
 	margin-top: 10px;
