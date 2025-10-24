@@ -28,6 +28,7 @@
                 <li><a href="/contact.html" class="navbar-link">Contact</a></li>
             </ul>
             <div class="navbar-spacer"></div>
+            <button id="translationBtn" class="translation-btn" title="Translate to English">EN / FR</button>
         </div>
     </nav>
     
@@ -104,9 +105,157 @@
         </div>
     </footer>
     <script>
-        // JavaScript pour gérer l'effet de scroll de la navbar (identique à index)
+        let currentLanguage = localStorage.getItem('language') || 'fr';
+        let translations = {};
+
+        // Charger les fichiers JSON de traductions
+        async function loadTranslations() {
+            try {
+                const frResponse = await fetch('/translations/fr.json');
+                const enResponse = await fetch('/translations/en.json');
+                
+                translations.fr = await frResponse.json();
+                translations.en = await enResponse.json();
+                
+                // Initialiser avec la langue stockée
+                translatePage(currentLanguage);
+            } catch (error) {
+                console.error('Erreur lors du chargement des traductions:', error);
+            }
+        }
+
+        // Fonction pour traduire les éléments spécifiques de la page apropos
+        function translatePage(language) {
+            currentLanguage = language;
+            localStorage.setItem('language', language);
+            
+            const lang = translations[language];
+            if (!lang) return;
+
+            // Navbar
+            const navLinks = document.querySelectorAll('.navbar-link');
+            const navKeys = ['home', 'about', 'services', 'bookings', 'reviews', 'contact'];
+            navLinks.forEach((link, index) => {
+                if (navKeys[index]) {
+                    link.textContent = lang.navbar[navKeys[index]];
+                }
+            });
+
+            // About page content
+            const aboutTitle = document.querySelector('.about-container h1');
+            if (aboutTitle) {
+                aboutTitle.textContent = lang.aboutPage.title;
+            }
+
+            const aboutParagraphs = document.querySelectorAll('.about-content p');
+            if (aboutParagraphs.length >= 3) {
+                aboutParagraphs[0].innerHTML = lang.aboutPage.intro1.replace(/\n/g, '<br>');
+                aboutParagraphs[1].textContent = lang.aboutPage.intro2;
+                aboutParagraphs[2].textContent = lang.aboutPage.intro3;
+            }
+
+            const reserveBtn = document.querySelector('.reserve-btn-page');
+            if (reserveBtn) {
+                reserveBtn.textContent = lang.aboutPage.reserveBtn;
+            }
+
+            const sectionTitle = document.querySelector('.section-title');
+            if (sectionTitle) {
+                sectionTitle.textContent = lang.aboutPage.sectionTitle;
+            }
+
+            // Driver card content
+            const driverName = document.querySelector('.driver-card h3');
+            if (driverName) {
+                driverName.textContent = lang.aboutPage.driverName;
+            }
+
+            const driverTitleElements = document.querySelectorAll('.driver-card .driver-title');
+            if (driverTitleElements.length > 0) {
+                driverTitleElements[0].textContent = lang.aboutPage.driverTitle;
+            }
+
+            const driverDesc = document.querySelector('.driver-description');
+            if (driverDesc) {
+                driverDesc.textContent = lang.aboutPage.driverDescription;
+            }
+
+            const driverExp = document.querySelector('.driver-experience');
+            if (driverExp) {
+                driverExp.textContent = lang.aboutPage.driverExperience;
+            }
+
+            const certBadges = document.querySelectorAll('.driver-card .certification-badge');
+            const certKeys = ['certProfessional', 'certInsured', 'certLanguage', 'certPunctuality'];
+            certBadges.forEach((badge, index) => {
+                if (certKeys[index] && lang.aboutPage[certKeys[index]]) {
+                    badge.textContent = lang.aboutPage[certKeys[index]];
+                }
+            });
+
+            // Vehicle card content
+            const vehicleTitle = document.querySelector('.vehicle-card h3');
+            if (vehicleTitle) {
+                vehicleTitle.textContent = lang.aboutPage.vehicleTitle;
+            }
+
+            const vehicleTitleElements = document.querySelectorAll('.vehicle-card .driver-title');
+            if (vehicleTitleElements.length > 0) {
+                vehicleTitleElements[0].textContent = lang.aboutPage.vehicleModel;
+            }
+
+            const vehicleDesc = document.querySelector('.vehicle-card > p');
+            if (vehicleDesc) {
+                vehicleDesc.textContent = lang.aboutPage.vehicleDescription;
+            }
+
+            const vehicleFeatures = document.querySelectorAll('.vehicle-card ul li');
+            const featureKeys = ['vehicleFeature1', 'vehicleFeature2', 'vehicleFeature3', 'vehicleFeature4'];
+            vehicleFeatures.forEach((feature, index) => {
+                if (featureKeys[index] && lang.aboutPage[featureKeys[index]]) {
+                    const bullet = feature.querySelector('span');
+                    if (bullet) {
+                        feature.innerHTML = '<span style="position:absolute; left:-8px; color:#FFB6A3;">•</span> ' + lang.aboutPage[featureKeys[index]];
+                    }
+                }
+            });
+
+            // Footer copyright
+            const footerBottom = document.querySelector('.footer-bottom p');
+            if (footerBottom) {
+                footerBottom.textContent = lang.footer.copyright;
+            }
+
+            // Mettre à jour l'attribut lang du document
+            document.documentElement.lang = language;
+            
+            // Mettre à jour le bouton de traduction
+            const btn = document.getElementById('translationBtn');
+            if (btn) {
+                btn.title = language === 'fr' ? 'Translate to English' : 'Traduire en français';
+            }
+        }
+
+        // Initialiser au chargement de la page
+        window.addEventListener('DOMContentLoaded', function() {
+            loadTranslations();
+        });
+
+        // Ajouter un événement au bouton de traduction
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('translationBtn');
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    const newLanguage = currentLanguage === 'fr' ? 'en' : 'fr';
+                    translatePage(newLanguage);
+                });
+            }
+        });
+
+        // JavaScript pour gérer l'effet de scroll de la navbar
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar');
+            
             if (window.scrollY > 50) {
                 navbar.classList.add('scrolled');
             } else {

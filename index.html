@@ -26,6 +26,7 @@
                 <li><a href="/contact.html" class="navbar-link">Contact</a></li>
                  </ul>
             <div class="navbar-spacer"></div>
+            <button id="translationBtn" class="translation-btn" title="Translate to English">EN / FR</button>
         </div>
     </nav>
     <!--- Hero section -->
@@ -98,13 +99,12 @@
 </div>
 <div class="icon-wrapper">
     <img src="/images/salutation-dhommes-daffaires-debout-lun-devant-lautre-et-lun-portant-une-valise.png" alt="acceuil perso">
-    <div class="icon-label">Acceuil Personnalisé</div>
+    <div class="icon-label">Accueil Personnalisé</div>
 </div>
 <div class="icon-wrapper">
     <img src="/images/wifi.png" alt="wifi">
     <div class="icon-label">Wifi à bord (bientôt dispo)</div>
 </div>
-
 </div>
 
     <!-- Footer -->
@@ -136,6 +136,119 @@
     </footer>
 
     <script>
+        let currentLanguage = localStorage.getItem('language') || 'fr';
+        let translations = {};
+
+        // Charger les fichiers JSON de traductions
+        async function loadTranslations() {
+            try {
+                const frResponse = await fetch('/translations/fr.json');
+                const enResponse = await fetch('/translations/en.json');
+                
+                translations.fr = await frResponse.json();
+                translations.en = await enResponse.json();
+                
+                // Initialiser avec la langue stockée
+                translatePage(currentLanguage);
+            } catch (error) {
+                console.error('Erreur lors du chargement des traductions:', error);
+            }
+        }
+
+        // Fonction pour traduire les éléments spécifiques
+        function translatePage(language) {
+            currentLanguage = language;
+            localStorage.setItem('language', language);
+            
+            const lang = translations[language];
+            if (!lang) return;
+
+            // Navbar
+            const navLinks = document.querySelectorAll('.navbar-link');
+            const navKeys = ['home', 'about', 'services', 'bookings', 'reviews', 'contact'];
+            navLinks.forEach((link, index) => {
+                if (navKeys[index]) {
+                    link.textContent = lang.navbar[navKeys[index]];
+                }
+            });
+
+            // Hero section
+            const bookBtn = document.querySelector('.reserve-btn');
+            if (bookBtn && bookBtn.textContent.includes('Réserver') || bookBtn.textContent.includes('Book')) {
+                bookBtn.textContent = lang.hero.bookBtn;
+            }
+
+            const titleText = document.querySelector('.titreprincipal p');
+            if (titleText) {
+                titleText.textContent = lang.hero.title;
+            }
+
+            // Services section title
+            const servicesTitle = document.querySelector('.services-section h2');
+            if (servicesTitle) {
+                servicesTitle.textContent = lang.servicesSection.title;
+            }
+
+            // Service items
+            const serviceItems = document.querySelectorAll('.service-item');
+            if (serviceItems.length >= 3) {
+                serviceItems[0].querySelector('h3').textContent = lang.servicesSection.service1Title;
+                serviceItems[0].querySelector('p').textContent = lang.servicesSection.service1Text;
+                
+                serviceItems[1].querySelector('h3').textContent = lang.servicesSection.service2Title;
+                serviceItems[1].querySelector('p').textContent = lang.servicesSection.service2Text;
+                
+                serviceItems[2].querySelector('h3').textContent = lang.servicesSection.service3Title;
+                serviceItems[2].querySelector('p').textContent = lang.servicesSection.service3Text;
+            }
+
+            // Supplements title
+            const supCenterTitle = document.querySelector('.sup-center h2');
+            if (supCenterTitle) {
+                supCenterTitle.textContent = lang.supplements.title;
+            }
+
+            // Supplement icons labels
+            const iconLabels = document.querySelectorAll('.icon-label');
+            const supKeys = ['phoneCharger', 'water', 'personalWelcome', 'wifi', 'childSeat'];
+            iconLabels.forEach((label, index) => {
+                if (supKeys[index] && lang.supplements[supKeys[index]]) {
+                    label.textContent = lang.supplements[supKeys[index]];
+                }
+            });
+
+            // Footer copyright
+            const footerBottom = document.querySelector('.footer-bottom p');
+            if (footerBottom) {
+                footerBottom.textContent = lang.footer.copyright;
+            }
+
+            // Mettre à jour l'attribut lang du document
+            document.documentElement.lang = language;
+            
+            // Mettre à jour le bouton de traduction
+            const btn = document.getElementById('translationBtn');
+            if (btn) {
+                btn.title = language === 'fr' ? 'Translate to English' : 'Traduire en français';
+            }
+        }
+
+        // Initialiser au chargement de la page
+        window.addEventListener('DOMContentLoaded', function() {
+            loadTranslations();
+        });
+
+        // Ajouter un événement au bouton de traduction
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('translationBtn');
+            if (btn) {
+                btn.addEventListener('click', function() {
+                    const newLanguage = currentLanguage === 'fr' ? 'en' : 'fr';
+                    translatePage(newLanguage);
+                });
+            }
+        });
+
         // JavaScript pour gérer l'effet de scroll de la navbar
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar');

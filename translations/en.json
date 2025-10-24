@@ -1,0 +1,57 @@
+{
+  "navbar": {
+    "home": "Home",
+    "about": "About",
+    "services": "Our Services",
+    "bookings": "Bookings",
+    "reviews": "Client Reviews",
+    "contact": "Contact"
+  },
+  "hero": {
+    "bookBtn": "Book Online",
+    "title": "BOOK YOUR PRIVATE DRIVER"
+  },
+  "servicesSection": {
+    "title": "——————   WHY CHOOSE US?   ——————",
+    "service1Title": "Competitive Price and No Hidden Fees",
+    "service1Text": "Enjoy transparent and advantageous rates, lower than our competitors. Your price is set in advance: no unexpected surcharges, no hidden fees, only reliable and affordable service.",
+    "service2Title": "Comfort and Premium Service",
+    "service2Text": "Travel in a top-of-the-line vehicle, perfectly maintained, for a pleasant and serene experience. Enjoy personalized attention, bottled water, phone charger and music of your choice, for an enjoyable and tailor-made journey.",
+    "service3Title": "Free Cancellation (up to 10 hours in advance)",
+    "service3Text": "Plan your journeys with complete peace of mind: you can cancel for free up to 10 hours before your departure. Flexibility and simplicity are at the heart of our service, to offer you maximum peace of mind."
+  },
+  "supplements": {
+    "title": "AVAILABLE ADDITIONAL SERVICES",
+    "phoneCharger": "Phone Charger",
+    "water": "Bottled Water",
+    "personalWelcome": "Personalized Welcome",
+    "wifi": "Onboard Wifi (soon)",
+    "childSeat": "Child Seat"
+  },
+  "footer": {
+    "copyright": "Copyright 2025 Nicolas VTC. All rights reserved."
+  },
+  "aboutPage": {
+    "title": "ABOUT ME",
+    "intro1": "Your simple and reliable solution for all your trips to Lisbon.\nOur mission is clear: to make your journeys pleasant, safe and stress-free.",
+    "intro2": "We created this service with one idea in mind: to offer quality private transport accessible to all. Whether it's for a daily commute, a business meeting, a transfer to a train station or airport, we adapt to your needs.",
+    "intro3": "With transparent rates, attentive drivers and easy bookings, we do everything to offer you a practical and warm service.",
+    "reserveBtn": "📅 Book now",
+    "sectionTitle": "👤 Meet your driver & our vehicle 🚗",
+    "driverTitle": "Premium Private Driver",
+    "driverName": "Stephan PERRET",
+    "driverDescription": "Passionate about the road and human contact, I put my expertise at the service of your travels in Lisbon. With several years of experience in private transport, my goal is to offer you much more than a simple journey: a comfortable, serene experience adapted to your needs.",
+    "driverExperience": "✨ More than 4 years of experience",
+    "certProfessional": "Professional License",
+    "certInsured": "Insured Vehicle",
+    "certLanguage": "Portuguese/French",
+    "certPunctuality": "Punctuality Guaranteed",
+    "vehicleTitle": "SUV Car",
+    "vehicleModel": "Nissan QASHQAI",
+    "vehicleDescription": "Spacious and clean vehicle, ideal for workers, families or airport transfers. Comfort, safety and onboard services included.",
+    "vehicleFeature1": "Air Conditioning",
+    "vehicleFeature2": "Large Capacity",
+    "vehicleFeature3": "Clean Vehicle",
+    "vehicleFeature4": "Bottled Water"
+  }
+}
