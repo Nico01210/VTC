@@ -191,10 +191,11 @@
                 <li><a href="/contact.html" class="navbar-link">Contact</a></li>
             </ul>
             <div class="navbar-spacer"></div>
+            <button id="translationBtn" class="translation-btn" title="Translate to English">EN / FR</button>
         </div>
     </nav>
     
-<h1>Nos Services</h1>
+<h1 id="servicesPageTitle">Nos Services</h1>
 
 <section class="services">
 
@@ -233,7 +234,7 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
   </div>
 </section>
 
-<h1 style="margin: 70px;">Comment ça marche ?</h1>
+<h1 style="margin: 70px;" id="servicesHowItWorks">Comment ça marche ?</h1>
 <section class="steps-container">
   <div class="steps-row">
     <div class="step">
@@ -270,7 +271,7 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
 </section>
 
                              <!-- MAP -->   
- <h1>Nos zones de services - Trajets Standards</h1>
+ <h1 id="servicesMapTitle">Nos zones de services - Trajets Standards</h1>
   <div class="map-container">
     <div id="map"></div>
   </div>
@@ -355,6 +356,142 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
     </footer>
 
 <script>
+  let currentLanguage = localStorage.getItem('language') || 'fr';
+  let translations = {};
+
+  // Charger les fichiers JSON de traductions
+  async function loadTranslations() {
+    try {
+      const frResponse = await fetch('/translations/fr.json');
+      const enResponse = await fetch('/translations/en.json');
+      
+      translations.fr = await frResponse.json();
+      translations.en = await enResponse.json();
+      
+      // Initialiser avec la langue stockée
+      translatePage(currentLanguage);
+    } catch (error) {
+      console.error('Erreur lors du chargement des traductions:', error);
+    }
+  }
+
+  // Fonction pour traduire les éléments spécifiques de la page services
+  function translatePage(language) {
+    currentLanguage = language;
+    localStorage.setItem('language', language);
+    
+    const lang = translations[language];
+    if (!lang) return;
+
+    // Navbar
+    const navLinks = document.querySelectorAll('.navbar-link');
+    const navKeys = ['home', 'about', 'services', 'bookings', 'reviews', 'contact'];
+    navLinks.forEach((link, index) => {
+      if (navKeys[index]) {
+        link.textContent = lang.navbar[navKeys[index]];
+      }
+    });
+
+    // Page title
+    const pageTitle = document.getElementById('servicesPageTitle');
+    if (pageTitle) {
+      pageTitle.textContent = lang.servicesPage.title;
+    }
+
+    // Service cards
+    const cards = document.querySelectorAll('.card');
+    if (cards.length >= 3) {
+      // Card 1
+      cards[0].querySelector('h3').textContent = lang.servicesPage.card1Title;
+      cards[0].querySelector('p').textContent = lang.servicesPage.card1Text;
+      cards[0].querySelector('.reserve-btn-page').textContent = lang.servicesPage.reserveNow;
+      
+      // Card 2
+      cards[1].querySelector('h3').textContent = lang.servicesPage.card2Title;
+      cards[1].querySelector('p').textContent = lang.servicesPage.card2Text;
+      cards[1].querySelector('.reserve-btn-page').textContent = lang.servicesPage.reserveNow;
+      
+      // Card 3
+      cards[2].querySelector('h3').textContent = lang.servicesPage.card3Title;
+      cards[2].querySelector('p').textContent = lang.servicesPage.card3Text;
+      cards[2].querySelector('.reserve-btn-page').textContent = lang.servicesPage.reserveNow;
+    }
+
+    // "Comment ça marche ?" title
+    const howItWorksTitle = document.getElementById('servicesHowItWorks');
+    if (howItWorksTitle) {
+      howItWorksTitle.textContent = lang.servicesPage.howItWorks;
+    }
+
+    // "Nos zones de services" title
+    const mapTitle = document.getElementById('servicesMapTitle');
+    if (mapTitle) {
+      mapTitle.textContent = lang.servicesPage.serviceAreas;
+    }
+
+    // Steps
+    const steps = document.querySelectorAll('.step');
+    if (steps.length >= 5) {
+      steps[0].querySelector('h4').textContent = lang.servicesPage.step1Title;
+      steps[0].querySelector('p').textContent = lang.servicesPage.step1Text;
+      
+      steps[1].querySelector('h4').textContent = lang.servicesPage.step2Title;
+      steps[1].querySelector('p').textContent = lang.servicesPage.step2Text;
+      
+      steps[2].querySelector('h4').textContent = lang.servicesPage.step3Title;
+      steps[2].querySelector('p').textContent = lang.servicesPage.step3Text;
+      
+      steps[3].querySelector('h4').textContent = lang.servicesPage.step4Title;
+      steps[3].querySelector('p').textContent = lang.servicesPage.step4Text;
+      
+      steps[4].querySelector('h4').textContent = lang.servicesPage.step5Title;
+      steps[4].querySelector('p').textContent = lang.servicesPage.step5Text;
+    }
+
+    // Footer copyright
+    const footerBottom = document.querySelector('.footer-bottom p');
+    if (footerBottom) {
+      footerBottom.textContent = lang.footer.copyright;
+    }
+
+    // Update map markers if map is initialized
+    if (window.mapMarkersUpdated !== undefined) {
+      updateMapMarkers(lang);
+    }
+
+    // Mettre à jour l'attribut lang du document
+    document.documentElement.lang = language;
+    
+    // Mettre à jour le bouton de traduction
+    const btn = document.getElementById('translationBtn');
+    if (btn) {
+      btn.title = language === 'fr' ? 'Translate to English' : 'Traduire en français';
+    }
+  }
+
+  // Fonction pour mettre à jour les marqueurs de la carte
+  function updateMapMarkers(lang) {
+    // Cette fonction est appelée après l'initialisation de la carte
+    // Les marqueurs sont mis à jour via le script de carte
+  }
+
+  // Initialiser au chargement de la page
+  window.addEventListener('DOMContentLoaded', function() {
+    loadTranslations();
+  });
+
+  // Ajouter un événement au bouton de traduction
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('translationBtn');
+    if (btn) {
+      btn.addEventListener('click', function() {
+        const newLanguage = currentLanguage === 'fr' ? 'en' : 'fr';
+        translatePage(newLanguage);
+      });
+    }
+  });
+
+  // JavaScript pour gérer l'effet de scroll de la navbar
   window.addEventListener('scroll', function() {
     const navbar = document.querySelector('.navbar');
     if (window.scrollY > 50) {
