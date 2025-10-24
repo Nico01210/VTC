@@ -27,45 +27,46 @@
                 <li><a href="/avis.html" class="navbar-link">Avis clients</a></li>
                 <li><a href="/contact.html" class="navbar-link">Contact</a></li>
             </ul>
+            <button id="translationBtn" class="translation-btn">EN / FR</button>
             <div class="navbar-spacer"></div>
         </div>
     </nav>
     
     <div class="contact-form-container">
-        <h1>Contactez-nous</h1>
+        <h1 id="contactPageTitle">Contactez-nous</h1>
         <form id="contactForm" class="contact-form">
             <div class="form-row">
                 <div class="form-group">
-                    <label for="nom">Nom :</label>
+                    <label for="nom" id="labelNom">Nom :</label>
                     <input type="text" id="nom" name="nom" required>
                 </div>
                 <div class="form-group">
-                    <label for="prenom">Prénom :</label>
+                    <label for="prenom" id="labelPrenom">Prénom :</label>
                     <input type="text" id="prenom" name="prenom" required>
                 </div>
             </div>
             
             <div class="form-group">
-                <label for="telephone">Numéro de téléphone :</label>
+                <label for="telephone" id="labelTelephone">Numéro de téléphone :</label>
                 <input type="tel" id="telephone" name="telephone" required>
             </div>
             
             <div class="form-group">
-                <label for="email">Mail :</label>
+                <label for="email" id="labelEmail">Mail :</label>
                 <input type="email" id="email" name="email" required>
             </div>
             
             <div class="form-group">
-                <label for="objet">Objet du message :</label>
+                <label for="objet" id="labelObjet">Objet du message :</label>
                 <input type="text" id="objet" name="objet" required>
             </div>
             
             <div class="form-group">
-                <label for="message">Message :</label>
+                <label for="message" id="labelMessage">Message :</label>
                 <textarea id="message" name="message" rows="9" required></textarea>
             </div>
             
-            <button type="submit" class="submit-btn">Envoyer le message</button>
+            <button type="submit" class="submit-btn" id="submitBtn">Envoyer le message</button>
         </form>
     </div>
 
@@ -99,6 +100,91 @@
     </footer>
 
     <script>
+        // Traduction de la page
+        let currentLanguage = localStorage.getItem('language') || 'fr';
+
+        async function loadTranslations() {
+            try {
+                const frResponse = await fetch('/translations/fr.json');
+                const enResponse = await fetch('/translations/en.json');
+                
+                const frData = await frResponse.json();
+                const enData = await enResponse.json();
+                
+                // Sauvegarder les traductions globalement
+                window.translations = { fr: frData, en: enData };
+                
+                // Appliquer la langue sauvegardée
+                translatePage(currentLanguage);
+                
+                // Ajouter l'événement au bouton de traduction
+                document.getElementById('translationBtn').addEventListener('click', () => {
+                    currentLanguage = currentLanguage === 'fr' ? 'en' : 'fr';
+                    localStorage.setItem('language', currentLanguage);
+                    translatePage(currentLanguage);
+                });
+            } catch (error) {
+                console.error('Erreur lors du chargement des traductions:', error);
+            }
+        }
+
+        function translatePage(language) {
+            if (!window.translations) return;
+            
+            const lang = window.translations[language];
+            const navbarLinks = {
+                'Accueil': document.querySelector('a.navbar-link[href="/index.html"]'),
+                'À propos': document.querySelector('a.navbar-link[href="/apropos.html"]'),
+                'Nos services': document.querySelector('a.navbar-link[href="/services.html"]'),
+                'Réservations': document.querySelector('a.navbar-link[href="/reservation.html"]'),
+                'Avis clients': document.querySelector('a.navbar-link[href="/avis.html"]'),
+                'Contact': document.querySelector('a.navbar-link[href="/contact.html"]')
+            };
+            
+            // Traduire la navbar
+            const navbarTexts = [
+                { element: navbarLinks['Accueil'], key: 'home' },
+                { element: navbarLinks['À propos'], key: 'about' },
+                { element: navbarLinks['Nos services'], key: 'services' },
+                { element: navbarLinks['Réservations'], key: 'bookings' },
+                { element: navbarLinks['Avis clients'], key: 'reviews' },
+                { element: navbarLinks['Contact'], key: 'contact' }
+            ];
+            
+            navbarTexts.forEach(item => {
+                if (item.element) {
+                    item.element.textContent = lang.navbar[item.key];
+                }
+            });
+            
+            // Traduire le footer
+            const footerBottom = document.querySelector('.footer-bottom p');
+            if (footerBottom) {
+                footerBottom.textContent = lang.footer.copyright;
+            }
+            
+            // Traduire la page contact
+            if (lang.contactPage) {
+                document.getElementById('contactPageTitle').textContent = lang.contactPage.title;
+                document.getElementById('labelNom').textContent = lang.contactPage.labelNom;
+                document.getElementById('labelPrenom').textContent = lang.contactPage.labelPrenom;
+                document.getElementById('labelTelephone').textContent = lang.contactPage.labelTelephone;
+                document.getElementById('labelEmail').textContent = lang.contactPage.labelEmail;
+                document.getElementById('labelObjet').textContent = lang.contactPage.labelObjet;
+                document.getElementById('labelMessage').textContent = lang.contactPage.labelMessage;
+                document.getElementById('submitBtn').textContent = lang.contactPage.submitBtn;
+                
+                // Sauvegarder les traductions pour les messages d'alerte
+                window.submitBtnSending = lang.contactPage.submitBtnSending;
+                window.submitBtnSuccess = lang.contactPage.submitBtnSuccess;
+                window.alertSuccess = lang.contactPage.alertSuccess;
+                window.alertError = lang.contactPage.alertError;
+            }
+        }
+
+        // Charger les traductions au démarrage
+        document.addEventListener('DOMContentLoaded', loadTranslations);
+
         // Initialiser EmailJS
         emailjs.init("39i-D86yCK0e1JTQy"); // Votre clé publique EmailJS
         
@@ -108,7 +194,7 @@
             
             const submitBtn = document.querySelector('.submit-btn');
             const originalText = submitBtn.textContent;
-            submitBtn.textContent = 'Envoi en cours...';
+            submitBtn.textContent = window.submitBtnSending || 'Envoi en cours...';
             submitBtn.disabled = true;
             
             // Récupérer les données du formulaire
@@ -124,16 +210,16 @@
             // VERSION EMAILJS RÉELLE - ACTIVE
             emailjs.send("service_6fc2p7p", "template_xeuhdsp", formData)
                 .then(function(response) {
-                    alert('Message envoyé avec succès !');
+                    alert(window.alertSuccess || 'Message envoyé avec succès !');
                     document.getElementById('contactForm').reset();
-                    submitBtn.textContent = '✅ Message envoyé !';
+                    submitBtn.textContent = window.submitBtnSuccess || '✅ Message envoyé !';
                     setTimeout(() => {
                         submitBtn.textContent = originalText;
                         submitBtn.disabled = false;
                     }, 3000);
                 })
                 .catch(function(error) {
-                    alert('Erreur lors de l\'envoi du message. Veuillez réessayer.');
+                    alert(window.alertError || 'Erreur lors de l\'envoi du message. Veuillez réessayer.');
                     console.error('Erreur EmailJS:', error);
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;

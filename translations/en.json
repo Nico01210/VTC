@@ -135,5 +135,19 @@
     "statsClientsLabel": "Satisfied customers",
     "statsRecommendation": "89%",
     "statsRecommendationLabel": "Recommendations"
+  },
+  "contactPage": {
+    "title": "Contact Us",
+    "labelNom": "Last Name:",
+    "labelPrenom": "First Name:",
+    "labelTelephone": "Phone Number:",
+    "labelEmail": "Email:",
+    "labelObjet": "Subject:",
+    "labelMessage": "Message:",
+    "submitBtn": "Send Message",
+    "submitBtnSending": "Sending...",
+    "submitBtnSuccess": "✅ Message Sent!",
+    "alertSuccess": "Message sent successfully!",
+    "alertError": "Error sending the message. Please try again."
   }
 }

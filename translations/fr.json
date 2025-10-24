@@ -135,5 +135,19 @@
     "statsClientsLabel": "Clients satisfaits",
     "statsRecommendation": "89%",
     "statsRecommendationLabel": "Recommandations"
+  },
+  "contactPage": {
+    "title": "Contactez-nous",
+    "labelNom": "Nom :",
+    "labelPrenom": "Prénom :",
+    "labelTelephone": "Numéro de téléphone :",
+    "labelEmail": "Mail :",
+    "labelObjet": "Objet du message :",
+    "labelMessage": "Message :",
+    "submitBtn": "Envoyer le message",
+    "submitBtnSending": "Envoi en cours...",
+    "submitBtnSuccess": "✅ Message envoyé !",
+    "alertSuccess": "Message envoyé avec succès !",
+    "alertError": "Erreur lors de l'envoi du message. Veuillez réessayer."
   }
 }
