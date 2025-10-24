@@ -83,5 +83,15 @@
     "mapCascaisText": "Cascais",
     "mapSintraText": "Sintra",
     "mapPopupText": "Zone de service : Lisbonne (incluant l'aéroport), Seixal, Barreiro, Cascais et Sintra"
+  },
+  "reservationPage": {
+    "title": "Réservation",
+    "description": "Cliquez sur un jour disponible pour réserver votre trajet via WhatsApp.",
+    "monthNames": ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+    "weekDays": ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
+    "weekDaysShort": ["Lu", "Ma", "Me", "Je", "Ve", "Sa", "Di"],
+    "availableHours": "Horaires disponibles pour ce jour :",
+    "chooseSlot": "Veuillez choisir un créneau parmi :",
+    "bookingMessage": "Bonjour Stephan, seriez vous disponible pour une course le {day} {month} {year} à {time} ?"
   }
 }

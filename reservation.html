@@ -26,11 +26,12 @@
                 <li><a href="/contact.html" class="navbar-link">Contact</a></li>
             </ul>
             <div class="navbar-spacer"></div>
+            <button id="translationBtn" class="translation-btn" title="Translate to English">EN / FR</button>
         </div>
     </nav>
 <section id="reservation" style="padding:50px 20px; text-align:center;">
-  <h1>Réservation</h1>
->  <p style="max-width:600px; margin:0 auto 30px; color:white; font-size:20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);">
+  <h1 id="reservationTitle">Réservation</h1>
+>  <p id="reservationDescription" style="max-width:600px; margin:0 auto 30px; color:white; font-size:20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);">
     Cliquez sur un jour disponible pour réserver votre trajet via WhatsApp.
   </p>
 
@@ -46,13 +47,13 @@
     
     <!-- Jours de la semaine -->
     <div class="calendar-weekdays">
-      <div>Lu</div>
-      <div>Ma</div>
-      <div>Me</div>
-      <div>Je</div>
-      <div>Ve</div>
-      <div>Sa</div>
-      <div>Di</div>
+      <div class="weekday-0">Lu</div>
+      <div class="weekday-1">Ma</div>
+      <div class="weekday-2">Me</div>
+      <div class="weekday-3">Je</div>
+      <div class="weekday-4">Ve</div>
+      <div class="weekday-5">Sa</div>
+      <div class="weekday-6">Di</div>
     </div>
 
     <!-- Mini calendrier jours -->
@@ -61,16 +62,94 @@
 </section>
 
 <script>
+let currentLanguage = localStorage.getItem('language') || 'fr';
+let translations = {};
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
-const monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
-let availability = {}; // stockera les disponibilités depuis le serveur
+let monthNames = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+let availability = {}; 
 const horaires = ['08:00','09:30','11:00','14:00','16:00','18:00'];
+
+// Charger les fichiers JSON de traductions
+async function loadTranslations() {
+  try {
+    const frResponse = await fetch('/translations/fr.json');
+    const enResponse = await fetch('/translations/en.json');
+    
+    translations.fr = await frResponse.json();
+    translations.en = await enResponse.json();
+    
+    // Initialiser avec la langue stockée
+    translatePage(currentLanguage);
+    fetchAvailability();
+  } catch (error) {
+    console.error('Erreur lors du chargement des traductions:', error);
+    fetchAvailability();
+  }
+}
+
+// Fonction pour traduire les éléments spécifiques de la page reservation
+function translatePage(language) {
+  currentLanguage = language;
+  localStorage.setItem('language', language);
+  
+  const lang = translations[language];
+  if (!lang) return;
+
+  // Navbar
+  const navLinks = document.querySelectorAll('.navbar-link');
+  const navKeys = ['home', 'about', 'services', 'bookings', 'reviews', 'contact'];
+  navLinks.forEach((link, index) => {
+    if (navKeys[index]) {
+      link.textContent = lang.navbar[navKeys[index]];
+    }
+  });
+
+  // Reservation page content
+  const reservationTitle = document.getElementById('reservationTitle');
+  if (reservationTitle) {
+    reservationTitle.textContent = lang.reservationPage.title;
+  }
+
+  const reservationDesc = document.getElementById('reservationDescription');
+  if (reservationDesc) {
+    reservationDesc.textContent = lang.reservationPage.description;
+  }
+
+  // Update calendar with new month names
+  monthNames = lang.reservationPage.monthNames;
+  
+  // Update weekday headers
+  const weekdayElements = document.querySelectorAll('.calendar-weekdays > div');
+  const weekdaysArray = lang.reservationPage.weekDaysShort;
+  weekdayElements.forEach((el, index) => {
+    if (weekdaysArray[index]) {
+      el.textContent = weekdaysArray[index];
+    }
+  });
+  
+  updateCalendar();
+
+  // Footer copyright
+  const footerBottom = document.querySelector('.footer-bottom p');
+  if (footerBottom) {
+    footerBottom.textContent = lang.footer.copyright;
+  }
+
+  // Mettre à jour l'attribut lang du document
+  document.documentElement.lang = language;
+  
+  // Mettre à jour le bouton de traduction
+  const btn = document.getElementById('translationBtn');
+  if (btn) {
+    btn.title = language === 'fr' ? 'Translate to English' : 'Traduire en français';
+  }
+}
 
 async function fetchAvailability() {
   try {
-  const API_URL = 'https://vtc-l3c5.onrender.com';
-const res = await fetch(`${API_URL}/availability`);
+    const API_URL = 'https://vtc-l3c5.onrender.com';
+    const res = await fetch(`${API_URL}/availability`);
     availability = await res.json();
     updateCalendar();
   } catch(err) {
@@ -115,13 +194,18 @@ function updateCalendar() {
       dayBox.addEventListener('mouseenter',()=>dayBox.style.backgroundColor='#1ebe5d');
       dayBox.addEventListener('mouseleave',()=>dayBox.style.backgroundColor='#25D366');
       dayBox.addEventListener('click',()=>{
-        let horaire = prompt('Horaires disponibles pour ce jour :\n' + activeHoraires.join(', '), activeHoraires[0]);
+        const lang = translations[currentLanguage];
+        let horaire = prompt(lang.reservationPage.availableHours + '\n' + activeHoraires.join(', '), activeHoraires[0]);
         if(horaire && activeHoraires.includes(horaire)){
           const selectedMonth = monthNames[currentMonth];
-          const message = `Bonjour Stephan, seriez vous disponible pour une course le ${day} ${selectedMonth} ${currentYear} à ${horaire} ?`;
+          const message = lang.reservationPage.bookingMessage
+            .replace('{day}', day)
+            .replace('{month}', selectedMonth)
+            .replace('{year}', currentYear)
+            .replace('{time}', horaire);
           window.open(`https://wa.me/33600000000?text=${encodeURIComponent(message)}`,'_blank');
         } else if(horaire){
-          alert('Veuillez choisir un créneau parmi : ' + activeHoraires.join(', '));
+          alert(lang.reservationPage.chooseSlot + ' ' + activeHoraires.join(', '));
         }
       });
     } else {
@@ -138,7 +222,31 @@ function changeMonth(direction){
   updateCalendar();
 }
 
-fetchAvailability();
+// Initialiser au chargement de la page
+window.addEventListener('DOMContentLoaded', function() {
+  loadTranslations();
+});
+
+// Ajouter un événement au bouton de traduction
+document.addEventListener('DOMContentLoaded', function() {
+  const btn = document.getElementById('translationBtn');
+  if (btn) {
+    btn.addEventListener('click', function() {
+      const newLanguage = currentLanguage === 'fr' ? 'en' : 'fr';
+      translatePage(newLanguage);
+    });
+  }
+});
+
+// JavaScript pour gérer l'effet de scroll de la navbar
+window.addEventListener('scroll', function() {
+  const navbar = document.querySelector('.navbar');
+  if (window.scrollY > 50) {
+    navbar.classList.add('scrolled');
+  } else {
+    navbar.classList.remove('scrolled');
+  }
+});
 </script>
 
   <!-- Footer -->
@@ -169,17 +277,6 @@ fetchAvailability();
         </div>
     </footer>
     
-<script>
-  window.addEventListener('scroll', function() {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-      navbar.classList.add('scrolled');
-    } else {
-      navbar.classList.remove('scrolled');
-    }
-  });
-</script>
-
 <!-- Menu Burger Script -->
 <script src="burger-menu.js"></script>
 

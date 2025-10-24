@@ -83,5 +83,15 @@
     "mapCascaisText": "Cascais",
     "mapSintraText": "Sintra",
     "mapPopupText": "Service area: Lisbon (including airport), Seixal, Barreiro, Cascais and Sintra"
+  },
+  "reservationPage": {
+    "title": "Booking",
+    "description": "Click on an available day to book your trip via WhatsApp.",
+    "monthNames": ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    "weekDays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "weekDaysShort": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    "availableHours": "Available times for this day:",
+    "chooseSlot": "Please choose a time slot from:",
+    "bookingMessage": "Hello Stephan, would you be available for a ride on {day} {month} {year} at {time}?"
   }
 }
