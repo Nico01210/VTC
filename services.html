@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -191,7 +191,13 @@
                 <li><a href="/contact.html" class="navbar-link">Contact</a></li>
             </ul>
             <div class="navbar-spacer"></div>
-            <button id="translationBtn" class="translation-btn" title="Translate to English">EN / FR</button>
+            <div class="language-selector">
+                <select id="translationBtn" onchange="changeLanguage(this.value)">
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="en">🇬🇧 English</option>
+                </select>
+            </div>
         </div>
     </nav>
     
@@ -356,7 +362,7 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
     </footer>
 
 <script>
-  let currentLanguage = localStorage.getItem('language') || 'fr';
+  let currentLanguage = localStorage.getItem('language') || 'pt';
   let translations = {};
 
   // Charger les fichiers JSON de traductions
@@ -364,9 +370,11 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
     try {
       const frResponse = await fetch('/translations/fr.json');
       const enResponse = await fetch('/translations/en.json');
+      const ptResponse = await fetch('/translations/pt.json');
       
       translations.fr = await frResponse.json();
       translations.en = await enResponse.json();
+      translations.pt = await ptResponse.json();
       
       // Initialiser avec la langue stockée
       translatePage(currentLanguage);
@@ -462,10 +470,10 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
     // Mettre à jour l'attribut lang du document
     document.documentElement.lang = language;
     
-    // Mettre à jour le bouton de traduction
-    const btn = document.getElementById('translationBtn');
-    if (btn) {
-      btn.title = language === 'fr' ? 'Translate to English' : 'Traduire en français';
+    // Mettre à jour le sélecteur de langue
+    const selectElement = document.getElementById('translationBtn');
+    if (selectElement) {
+      selectElement.value = language;
     }
   }
 
@@ -482,14 +490,17 @@ Plutôt que de réserver trajet par trajet, vous bénéficiez d'un véhicule et 
 
   // Ajouter un événement au bouton de traduction
   document.addEventListener('DOMContentLoaded', function() {
-    const btn = document.getElementById('translationBtn');
-    if (btn) {
-      btn.addEventListener('click', function() {
-        const newLanguage = currentLanguage === 'fr' ? 'en' : 'fr';
-        translatePage(newLanguage);
-      });
+    const selectElement = document.getElementById('translationBtn');
+    if (selectElement) {
+      // Définir la valeur initiale selon la langue stockée
+      selectElement.value = currentLanguage;
+      // L'événement onchange est déjà défini dans le HTML
     }
   });
+
+  function changeLanguage(language) {
+    translatePage(language);
+  }
 
   // JavaScript pour gérer l'effet de scroll de la navbar
   window.addEventListener('scroll', function() {

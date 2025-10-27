@@ -207,6 +207,52 @@ body:not(.home-page) {
 }
 
 /* Bouton de traduction */
+/* Language Selector Dropdown */
+.language-selector {
+	position: relative;
+	margin-right: 200px;
+}
+
+.language-selector select {
+	background: linear-gradient(135deg, #FFB6A3, #2E1425);
+	color: white;
+	border: none;
+	padding: 12px 18px;
+	font-size: 14px;
+	font-weight: bold;
+	border-radius: 25px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	white-space: nowrap;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	padding-right: 35px;
+	background-image: url('data:image/svg+xml;utf8,<svg fill="white" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+	background-repeat: no-repeat;
+	background-position: right 10px center;
+	background-size: 20px;
+	padding-right: 38px;
+}
+
+.language-selector select:hover {
+	background-color: #2E1425;
+	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+	transform: scale(1.05);
+}
+
+.language-selector select:focus {
+	outline: none;
+	box-shadow: 0 4px 20px rgba(255, 182, 163, 0.4);
+}
+
+.language-selector option {
+	background-color: #f0f0f0;
+	color: #333;
+	padding: 10px;
+	margin: 5px 0;
+}
+
 .translation-btn {
 	background: linear-gradient(135deg, #FFB6A3, #2E1425);
 	color: white;

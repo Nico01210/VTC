@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +28,13 @@
                 <li><a href="/contact.html" class="navbar-link">Contact</a></li>
             </ul>
             <div class="navbar-spacer"></div>
-            <button id="translationBtn" class="translation-btn">EN / FR</button>
+            <div class="language-selector">
+                <select id="translationBtn" onchange="changeLanguage(this.value)">
+                    <option value="pt">🇵🇹 Português</option>
+                    <option value="fr">🇫🇷 Français</option>
+                    <option value="en">🇬🇧 English</option>
+                </select>
+            </div>
         </div>
     </nav>
    
@@ -200,28 +206,29 @@
         });
 
         // Traduction de la page
-        let currentLanguage = localStorage.getItem('language') || 'fr';
+        let currentLanguage = localStorage.getItem('language') || 'pt';
 
         async function loadTranslations() {
             try {
                 const frResponse = await fetch('/translations/fr.json');
                 const enResponse = await fetch('/translations/en.json');
+                const ptResponse = await fetch('/translations/pt.json');
                 
                 const frData = await frResponse.json();
                 const enData = await enResponse.json();
+                const ptData = await ptResponse.json();
                 
                 // Sauvegarder les traductions globalement
-                window.translations = { fr: frData, en: enData };
+                window.translations = { fr: frData, en: enData, pt: ptData };
                 
                 // Appliquer la langue sauvegardée
                 translatePage(currentLanguage);
                 
-                // Ajouter l'événement au bouton de traduction
-                document.getElementById('translationBtn').addEventListener('click', () => {
-                    currentLanguage = currentLanguage === 'fr' ? 'en' : 'fr';
-                    localStorage.setItem('language', currentLanguage);
-                    translatePage(currentLanguage);
-                });
+                // Initialiser le sélecteur
+                const selectElement = document.getElementById('translationBtn');
+                if (selectElement) {
+                    selectElement.value = currentLanguage;
+                }
             } catch (error) {
                 console.error('Erreur lors du chargement des traductions:', error);
             }
@@ -288,6 +295,21 @@
                 document.getElementById('statsRecommendation').textContent = lang.reviewsPage.statsRecommendation;
                 document.getElementById('statsRecommendationLabel').textContent = lang.reviewsPage.statsRecommendationLabel;
             }
+
+            // Mettre à jour l'attribut lang du document
+            document.documentElement.lang = language;
+            
+            // Mettre à jour le sélecteur de langue
+            const selectElement = document.getElementById('translationBtn');
+            if (selectElement) {
+                selectElement.value = language;
+            }
+        }
+
+        function changeLanguage(language) {
+            currentLanguage = language;
+            localStorage.setItem('language', currentLanguage);
+            translatePage(currentLanguage);
         }
 
         // Charger les traductions au démarrage
