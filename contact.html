@@ -220,13 +220,23 @@
             submitBtn.disabled = true;
             
             // Récupérer les données du formulaire
+            const nom = document.getElementById('nom').value;
+            const prenom = document.getElementById('prenom').value;
+            const telephone = document.getElementById('telephone').value;
+            const email = document.getElementById('email').value;
+            const objet = document.getElementById('objet').value;
+            const message = document.getElementById('message').value;
+            
+            // Formater le message avec les informations de l'utilisateur
+            const formattedMessage = `${prenom} ${nom} a envoyé :\n\n${message}\n\n--- Informations de contact ---\nMail : ${email}\nTéléphone : ${telephone}`;
+            
             const formData = {
-                nom: document.getElementById('nom').value,
-                prenom: document.getElementById('prenom').value,
-                telephone: document.getElementById('telephone').value,
-                email: document.getElementById('email').value,
-                objet: document.getElementById('objet').value,
-                message: document.getElementById('message').value
+                nom: nom,
+                prenom: prenom,
+                telephone: telephone,
+                email: email,
+                objet: objet,
+                message: formattedMessage
             };
             
             // VERSION EMAILJS RÉELLE - ACTIVE
