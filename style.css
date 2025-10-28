@@ -150,6 +150,21 @@ body {
 	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
 }
 
+/* Classes pour hide/show au scroll mobile */
+.navbar {
+	transition: transform 0.3s ease-in-out;
+}
+
+.navbar.navbar-hidden {
+	opacity: 0;
+	pointer-events: none;
+	transition: opacity 0.3s ease-in-out;
+}
+
+.navbar.navbar-hidden .navbar-menu {
+	display: none !important;
+}
+
 .navbar-container {
 	display: flex;
 	justify-content: space-between;
@@ -1527,10 +1542,10 @@ h1 {
     .navbar-menu {
         display: none;
         position: fixed;
-        top: 70px;
+        top: 0;
         left: 0;
         width: 100vw;
-        height: calc(100vh - 70px);
+        height: 100vh;
         background: rgba(0, 0, 0, 0.95);
         backdrop-filter: blur(10px);
         flex-direction: column;
@@ -1588,11 +1603,12 @@ h1 {
 
   /* Assurer que la navbar ne couvre pas les titres sur mobile (déjà géré globalement) */
   .navbar {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     width: 100%;
     background: transparent !important;
+    z-index: 1000;
   }
 }
 

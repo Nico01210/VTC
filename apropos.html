@@ -264,13 +264,38 @@
         }
 
         // JavaScript pour gérer l'effet de scroll de la navbar
+        let lastScrollY = 0;
+        let scrollDirection = 'down';
+        
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar');
+            const currentScrollY = window.scrollY;
             
-            if (window.scrollY > 50) {
+            // Déterminer la direction du scroll
+            if (currentScrollY > lastScrollY) {
+                scrollDirection = 'down';
+            } else {
+                scrollDirection = 'up';
+            }
+            lastScrollY = currentScrollY;
+            
+            // Ajouter la classe scrolled après 50px
+            if (currentScrollY > 50) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
+            }
+            
+            // Sur mobile (max-width: 1024px), cacher/afficher selon la direction
+            if (window.innerWidth <= 1024) {
+                if (scrollDirection === 'down' && currentScrollY > 100) {
+                    navbar.classList.add('navbar-hidden');
+                } else {
+                    navbar.classList.remove('navbar-hidden');
+                }
+            } else {
+                // Sur desktop, toujours visible
+                navbar.classList.remove('navbar-hidden');
             }
         });
     </script>

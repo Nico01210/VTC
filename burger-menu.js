@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Fermer le menu si on clique en dehors
         document.addEventListener('click', function(e) {
-            if (!navbar.contains(e.target) && menu.classList.contains('open')) {
+            if (!navbar.contains(e.target) && !menu.contains(e.target) && menu.classList.contains('open')) {
                 closeMenu();
             }
         });
@@ -72,15 +72,26 @@ document.addEventListener('DOMContentLoaded', function() {
         const menu = document.querySelector('.navbar-menu');
         const hamburger = document.getElementById('hamburger-menu');
         
-        menu.classList.toggle('open');
-        hamburger.classList.toggle('active');
+        if (menu.classList.contains('open')) {
+            closeMenu();
+        } else {
+            openMenu();
+        }
+    }
+
+    // Ouvrir le menu à la position du scroll actuel
+    function openMenu() {
+        const menu = document.querySelector('.navbar-menu');
+        const hamburger = document.getElementById('hamburger-menu');
+        
+        // Positionner le menu à la position du scroll actuel
+        menu.style.top = window.scrollY + 'px';
+        
+        menu.classList.add('open');
+        hamburger.classList.add('active');
         
         // Empêcher le scroll du body quand le menu est ouvert
-        if (menu.classList.contains('open')) {
-            document.body.style.overflow = 'hidden';
-        } else {
-            document.body.style.overflow = '';
-        }
+        document.body.style.overflow = 'hidden';
     }
 
     // Fermer le menu
@@ -90,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         menu.classList.remove('open');
         hamburger.classList.remove('active');
+        menu.style.top = '';
         document.body.style.overflow = '';
     }
 
