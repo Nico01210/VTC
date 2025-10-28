@@ -1818,6 +1818,22 @@ h1 {
     margin: 20px auto !important;
     width: 100% !important;
   }
+
+  /* Garantir que tous les steps aient la même taille que les cards en mobile */
+  .step {
+    flex: 0 1 auto;
+    width: calc(100% - 40px);
+    max-width: 560px;
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .steps-row {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 @media (max-width: 600px) {
