@@ -12,7 +12,6 @@ p {
 	position: relative;
 	width: 100%;
 	height: 100vh;
-	background-image: url('images/lisbonne2.jpg');
 	background-size: cover;
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -29,9 +28,8 @@ p {
 	align-items: center;
 }
 
-/* Padding pour éviter le chevauchement avec la navbar fixe sur toutes les pages sauf index */
-body:not(.home-page) {
-	padding-top: 100px;
+/* Styles généraux pour le body */
+body {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
@@ -125,7 +123,7 @@ body:not(.home-page) {
 								/* Voiture roulante */
 .car-overlay {
 	position: absolute;
-	bottom: -20px;
+	bottom: -120px;
 	left: 50%;
 	transform: translateX(-50%);
 	max-width: 600px;
@@ -134,23 +132,18 @@ body:not(.home-page) {
 }
 												/* Navbar Styles */
 .navbar {
-	position: fixed;
+	position: sticky;
 	top: 0;
 	left: 0;
 	width: 100%;
-	background: rgba(0, 0, 0, 0.9);
-	backdrop-filter: blur(10px);
-	z-index: 1000;
-	padding: 0;
-	box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-	transition: all 0.3s ease;
-}
-/* Navbar transparente pour toutes les pages */
-.navbar {
 	background: transparent;
 	backdrop-filter: none;
 	box-shadow: none;
+	z-index: 1000;
+	padding: 0;
+	transition: all 0.3s ease;
 }
+
 .navbar.scrolled {
 	background: rgba(0, 0, 0, 0.9);
 	backdrop-filter: blur(10px);
@@ -423,7 +416,7 @@ body:not(.home-page) {
 												/* Centrage du texte sous la barre horizontale */
 .sup-center {
 	text-align: center;
-	margin-top: 10px;
+	margin-top: 60px;
 	margin-bottom: 40px;
 }
 												/* Barre horizontale de séparation sous les trois colonnes */
@@ -432,9 +425,15 @@ body:not(.home-page) {
 	max-width: 900px;
 	height: 2px;
 	background: #111;
-	margin: 40px auto 60px auto;
+	margin: 40px auto 0 auto;
 	border-radius: 1px;
 	display: block;
+}
+
+.white-background-section {
+	background-color: #ffffff;
+	padding: 0 0 40px 0;
+	width: 100%;
 }
 
 							/* Carte véhicule stylée */
