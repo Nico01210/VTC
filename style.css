@@ -1593,6 +1593,26 @@ h1 {
     .hamburger {
         display: flex;
     }
+    
+    /* Style du bouton de traduction en mobile */
+    .language-selector select {
+        background: linear-gradient(135deg, #FFB6A3, #2E1425) !important;
+        color: white !important;
+        border: none !important;
+        padding: 12px 18px !important;
+        font-size: 14px !important;
+        font-weight: bold !important;
+        border-radius: 25px !important;
+        cursor: pointer !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+    }
+    
+    .language-selector select:hover {
+        background: #2E1425 !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+    }
 }
 
 /* Sur mobiles/tablettes, garder la navbar transparente même quand scrolled */
