@@ -12,20 +12,24 @@ p {
 	position: relative;
 	width: 100%;
 	height: 100vh;
+	background-image: url('images/lisbonne2.jpg');
 	background-size: cover;
 	background-position: center center;
 	background-repeat: no-repeat;
-	background-attachment: fixed;
+	background-attachment: scroll;
 	image-rendering: -webkit-optimize-contrast;
 	image-rendering: crisp-edges;
 	-webkit-backface-visibility: hidden;
 	backface-visibility: hidden;
 	-webkit-transform: translateZ(0);
 	transform: translateZ(0);
-	margin-top: 0;
+	margin-top: -180px;
+	margin-bottom: 0;
+	padding-top: 170px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	z-index: 1;
 }
 
 /* Styles généraux pour le body */
@@ -44,15 +48,19 @@ body {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	-webkit-transform: translateZ(0);
+	transform: translateZ(0);
+}
+
+/* Image de fond pour toutes les pages sauf l'index */
+body:not(.home-page) {
 	background-image: url('images/lisbonne2.jpg');
 	background-size: cover;
 	background-position: center center;
 	background-repeat: no-repeat;
 	background-attachment: fixed;
-	-webkit-backface-visibility: hidden;
-	backface-visibility: hidden;
-	-webkit-transform: translateZ(0);
-	transform: translateZ(0);
 }
 @keyframes carEntrance {
 	from {
@@ -134,7 +142,7 @@ body {
 								/* Voiture roulante */
 .car-overlay {
 	position: absolute;
-	bottom: -120px;
+	bottom: -30px;
 	left: 50%;
 	transform: translateX(-50%);
 	max-width: 600px;
@@ -1212,6 +1220,8 @@ h1 {
   .background-container {
     height: 60vh;
     background-attachment: scroll;
+    margin-top: -90px;
+    padding-top: 40px;
   }
   
   .titreprincipal {
@@ -1482,7 +1492,8 @@ h1 {
 }
 
 /* Force un espace sous la navbar fixe sur tous les titres et blocs principaux */
-.header, h1, .login-container, .calendar-admin, .services-section {
+/* Force un espace sous la navbar fixe sur tous les titres et blocs principaux */
+.header, h1, .login-container, .calendar-admin {
     margin-top: 100px !important;
 }
 
