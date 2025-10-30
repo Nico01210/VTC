@@ -29,6 +29,17 @@ p {
 }
 
 /* Styles généraux pour le body */
+/* Global Box Sizing */
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	width: 100%;
+	margin: 0;
+	padding: 0;
+}
+
 body {
 	min-height: 100vh;
 	display: flex;
@@ -325,6 +336,7 @@ body {
 	justify-content: space-between;
 	align-items: stretch;
 	max-width: 1300px;
+	width: 100%;
 	margin: 50px auto;
 	gap: 80px;
 	padding: 0 40px;
@@ -400,6 +412,7 @@ body {
 	justify-content: space-between;
 	align-items: center;
 	max-width: 900px;
+	width: 100%;
 	margin: 30px auto 50px auto;
 	gap: 150px;
 }
@@ -436,7 +449,7 @@ body {
 }
 												/* Barre horizontale de séparation sous les trois colonnes */
 .horizontal-separator {
-	width: 80%;
+	width: 100%;
 	max-width: 900px;
 	height: 2px;
 	background: #111;
@@ -447,7 +460,7 @@ body {
 
 .white-background-section {
 	background-color: #ffffff;
-	padding: 0 0 40px 0;
+	padding: 0 0 0 0;
 	width: 100%;
 }
 
@@ -999,6 +1012,7 @@ h1 {
 	justify-content: space-between;
 	align-items: center;
 	max-width: 1200px;
+	width: 100%;
 	margin: 0 auto;
 	padding: 0 20px;
 }
@@ -1196,7 +1210,8 @@ h1 {
   
   /* Hero section */
   .background-container {
-    background-attachment: scroll; /* Meilleure performance sur mobile */
+    height: 60vh;
+    background-attachment: scroll;
   }
   
   .titreprincipal {
@@ -2080,11 +2095,20 @@ h1 {
 
 /* Optimisation de l'image de fond pour mobile */
 @media (max-width: 1024px) {
-  .background-container {
+  /* Pour les pages autres que index */
+  body:not(.home-page) .background-container {
     background-attachment: scroll;
     background-size: cover;
     background-position: top center;
     min-height: 100vh;
+  }
+  
+  /* Pour la page index seulement */
+  body.home-page .background-container {
+    height: 60vh;
+    background-attachment: scroll;
+    background-size: cover;
+    background-position: center center;
   }
   
   body:not(.home-page) {
@@ -2097,7 +2121,18 @@ h1 {
 }
 
 @media (max-width: 600px) {
-  .background-container {
+  /* Pour la page index seulement */
+  body.home-page .background-container {
+    height: 50vh;
+    background-attachment: scroll;
+    background-size: cover;
+    background-position: center center;
+    image-rendering: auto;
+    -webkit-background-size: cover;
+  }
+  
+  /* Pour les autres pages */
+  body:not(.home-page) .background-container {
     background-attachment: scroll;
     background-size: cover;
     background-position: top center;
