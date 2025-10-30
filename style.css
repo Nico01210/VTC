@@ -1197,6 +1197,120 @@ h1 {
   }
 }
 
+/* ========== RESPONSIVE PROGRESSIF - TABLETTES LARGES (max-width: 900px) ========== */
+@media (max-width: 1024px) {
+  /* Hero section */
+  .titreprincipal p {
+    font-size: 28px;
+  }
+
+  .reserve-btn {
+    font-size: 20px;
+    padding: 16px 40px;
+  }
+
+  /* Services section */
+  .services-section {
+    padding: 40px 30px;
+  }
+
+  .services-section h2 {
+    font-size: 26px;
+  }
+
+  .services-with-icons {
+    gap: 60px;
+    padding: 0 30px;
+  }
+
+  /* Supplements */
+  .sup-center h2 {
+    font-size: 26px;
+    padding: 0 30px;
+  }
+
+  .sup-icons {
+    gap: 120px;
+    padding: 0 30px;
+  }
+
+  .icon-label {
+    font-size: 17px;
+  }
+}
+
+/* ========== RESPONSIVE PROGRESSIF - TABLETTES MOYENNES (max-width: 750px) ========== */
+@media (max-width: 750px) {
+  /* Hero section */
+  .background-container {
+    height: 65vh;
+  }
+
+  .titreprincipal p {
+    font-size: 24px;
+  }
+
+  .reserve-btn {
+    font-size: 18px;
+    padding: 14px 35px;
+  }
+
+  /* Services section */
+  .services-section {
+    padding: 35px 25px;
+  }
+
+  .services-section h2 {
+    font-size: 22px;
+  }
+
+  .services-with-icons {
+    gap: 50px;
+    padding: 0 25px;
+  }
+
+  .service-item {
+    max-width: 280px;
+  }
+
+  .column h3 {
+    font-size: 17px;
+  }
+
+  .column p {
+    font-size: 15px;
+  }
+
+  /* Supplements */
+  .sup-center h2 {
+    font-size: 22px;
+    padding: 0 25px;
+  }
+
+  .sup-icons {
+    gap: 80px;
+    padding: 0 25px;
+  }
+
+  .sup-icons img {
+    width: 55px;
+    height: 55px;
+  }
+
+  .icon-label {
+    font-size: 16px;
+  }
+
+  /* Footer */
+  .footer-container {
+    padding: 20px;
+  }
+
+  .contact-info span {
+    font-size: 13px;
+  }
+}
+
 /* Mobiles et petites tablettes (max-width: 768px) */
 @media (max-width: 768px) {
   /* Navigation responsive */
@@ -1549,7 +1663,7 @@ h1 {
     width: 28px;
     height: 4px;
     margin: 3px 0;
-    background: #fff;
+    background: linear-gradient(135deg, #FFB6A3, #2E1425);
     border-radius: 2px;
     transition: all 0.3s ease;
 }
@@ -2135,7 +2249,7 @@ h1 {
 @media (max-width: 600px) {
   /* Pour la page index seulement */
   body.home-page .background-container {
-    height: 50vh;
+    height: 80vh;
     background-attachment: scroll;
     background-size: cover;
     background-position: center center;
