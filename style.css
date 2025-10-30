@@ -1406,6 +1406,8 @@ h1 {
   
   .service-item {
     margin-bottom: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
   }
   
   .service-item .icon-wrapper {
