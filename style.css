@@ -1696,9 +1696,11 @@ h1 {
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 20px 0;
+        padding: 0;
         z-index: 1099;
         overflow-y: auto;
+        list-style: none;
+        margin: 0;
     }
     
     .navbar-menu.open {
@@ -1706,10 +1708,12 @@ h1 {
     }
     
     .navbar-menu li {
-        margin: 8px 0;
+        margin: 15px 0;
         opacity: 0;
         transform: translateY(-20px);
         animation: slideIn 0.3s ease-out forwards;
+        text-align: center;
+        width: 100%;
     }
     
     .navbar-menu.open li:nth-child(1) { animation-delay: 0.1s; }
@@ -1720,17 +1724,21 @@ h1 {
     .navbar-menu.open li:nth-child(6) { animation-delay: 0.6s; }
     
     .navbar-link {
-        font-size: 20px;
-        padding: 12px 25px;
+        font-size: 22px;
+        padding: 15px 30px;
         text-align: center;
         display: block;
         border-radius: 8px;
         transition: all 0.3s ease;
+        color: #fff;
+        text-decoration: none;
+        letter-spacing: 1px;
     }
     
     .navbar-link:hover {
         background: rgba(255, 182, 163, 0.2);
         transform: scale(1.05);
+        color: #FFB6A3;
     }
     
     .hamburger {
